@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RandomNotifier</string>
+    <string name="question">QUESTION</string>
+    <string name="hint">Hint</string>
+    <string name="hint_box">Check \"Hint\" if necessary!</string>
+    <string name="initial_timer">00:00:00</string>
+    <string name="start">START</string>
+    <string name="finish">FINISH</string>
+    <string name="setting">SETTING</string>
 </resources>
