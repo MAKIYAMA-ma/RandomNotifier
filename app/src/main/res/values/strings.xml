@@ -7,4 +7,6 @@
     <string name="start">START</string>
     <string name="finish">FINISH</string>
     <string name="setting">SETTING</string>
+    <string name="return_btn">RETURN</string>
+    <string name="save_btn">SAVE</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.randomnotifier
 
+import android.widget.Button
 import android.os.Bundle
 import android.os.Build
 import android.app.AlarmManager
@@ -20,6 +21,13 @@ class MainActivity : AppCompatActivity() {
 
         // 通知をスケジュール
         scheduleNotification(getNotificationTime())
+
+        // SETTINGボタンによる画面遷移
+        val setting_button: Button = findViewById<Button>(R.id.setting_button)
+        setting_button.setOnClickListener{
+            val intent = Intent(this,SettingForm::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun createNotificationChannel() {
