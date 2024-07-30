@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        SettingManager.init()
+
         createNotificationChannel()
 
         // 権限が許可されているか確認
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         if (alarmManager.canScheduleExactAlarms()) {
             // 権限が既に許可されている場合、アラームを設定する
             println("Already Permited")
-            scheduleNotification(getNotificationTime())
+            scheduleNotification(SettingManager.getNotificationTime())
         } else {
             // 権限が許可されていない場合、要求する
             println("Need Permision")
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 権限が許可された場合、アラームを設定する
                 println("Permited")
-                scheduleNotification(getNotificationTime())
+                scheduleNotification(SettingManager.getNotificationTime())
             } else {
                 // 権限が拒否された場合の処理
                 // 必要に応じて対応
@@ -112,42 +114,5 @@ class MainActivity : AppCompatActivity() {
             notificationTime.timeInMillis,
             pendingIntent
         )
-    }
-
-    private fun getNotificationTime(): Calendar {
-        val cur_calendar = Calendar.getInstance()
-        cur_calendar.add(Calendar.SECOND, 5)
-
-        // 通知時間1 仮に6:30
-        // TODO 設定内容取得
-        val calendar1 = Calendar.getInstance()
-        calendar1.set(Calendar.HOUR_OF_DAY, 6)
-        calendar1.set(Calendar.MINUTE, 30)
-        calendar1.set(Calendar.SECOND, 0)
-        if (calendar1.before(cur_calendar)) {
-            calendar1.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        // 通知時間2 仮に11:30
-        // TODO 設定内容取得
-        val calendar2 = Calendar.getInstance()
-        calendar2.set(Calendar.HOUR_OF_DAY, 11)
-        calendar2.set(Calendar.MINUTE, 30)
-        calendar2.set(Calendar.SECOND, 0)
-        if (calendar2.before(cur_calendar)) {
-            calendar2.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        // 通知時間3 仮に20:00
-        // TODO 設定内容取得
-        val calendar3 = Calendar.getInstance()
-        calendar3.set(Calendar.HOUR_OF_DAY, 20)
-        calendar3.set(Calendar.MINUTE, 0)
-        calendar3.set(Calendar.SECOND, 0)
-        if (calendar3.before(cur_calendar)) {
-            calendar3.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        return listOf(calendar1, calendar2, calendar3).minByOrNull { it.timeInMillis }!!
     }
 }
