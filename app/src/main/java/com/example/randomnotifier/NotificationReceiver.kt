@@ -14,7 +14,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val resultIntent = Intent(context, MainActivity::class.java)
         val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addNextIntentWithParentStack(resultIntent)
-        val resultPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        val resultPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)
@@ -25,6 +25,7 @@ class NotificationReceiver : BroadcastReceiver() {
             .setAutoCancel(true) // 通知をタップした後に自動で消す
             .build()
 
+        println("Receive")
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(1, notification)
     }
