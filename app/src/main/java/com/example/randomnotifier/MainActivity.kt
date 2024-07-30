@@ -9,9 +9,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.NotificationManager
 import android.app.NotificationChannel
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import android.provider.Settings
 import java.util.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -27,17 +29,16 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
 
         // 権限が許可されているか確認
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
-            != PackageManager.PERMISSION_GRANTED) {
-            // 権限が許可されていない場合、要求する
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM),
-                REQUEST_CODE_SCHEDULE_EXACT_ALARM
-            )
-        } else {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        println(alarmManager.canScheduleExactAlarms())
+        if (alarmManager.canScheduleExactAlarms()) {
             // 権限が既に許可されている場合、アラームを設定する
+            println("Already Permited")
             scheduleNotification(getNotificationTime())
+        } else {
+            // 権限が許可されていない場合、要求する
+            println("Need Permision")
+            showPermissionDialog()
         }
 
         // SETTINGボタンによる画面遷移
@@ -46,6 +47,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,SettingForm::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun showPermissionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Permission required")
+            .setMessage("To schedule exact alarms, please enable the permission in system settings.")
+            .setPositiveButton("Settings") { _, _ ->
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -57,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_SCHEDULE_EXACT_ALARM) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 権限が許可された場合、アラームを設定する
+                println("Permited")
                 scheduleNotification(getNotificationTime())
             } else {
                 // 権限が拒否された場合の処理
