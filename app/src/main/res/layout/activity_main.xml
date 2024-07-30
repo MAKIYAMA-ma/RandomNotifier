@@ -69,7 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/timer_box"
         app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintHorizontalChainStyle="spread" />
+        app:layout_constraintHorizontal_chainStyle="spread" />
 
     <Button
         android:id="@+id/finish_button"
@@ -82,7 +82,7 @@
         app:layout_constraintStart_toEndOf="@+id/start_button"
         app:layout_constraintTop_toTopOf="@+id/start_button"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintHorizontalChainStyle="spread" />
+        app:layout_constraintHorizontal_chainStyle="spread" />
 
     <Button
         android:id="@+id/setting_button"
