@@ -1,6 +1,5 @@
 package com.example.randomnotifier
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Button
 import android.widget.TextView
@@ -16,9 +15,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
 import android.view.View
-import java.util.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        SettingManager.init()
+        DataManager.init()
 
         createNotificationChannel()
 
@@ -41,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         if (alarmManager.canScheduleExactAlarms()) {
             // 権限が既に許可されている場合、アラームを設定する
             println("Already Permited")
-            SettingManager.scheduleNextNotification(this)
+            DataManager.scheduleNextNotification(this)
         } else {
             // 権限が許可されていない場合、要求する
             println("Need Permision")
@@ -83,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 権限が許可された場合、アラームを設定する
                 println("Permited")
-                SettingManager.scheduleNextNotification(this)
+                DataManager.scheduleNextNotification(this)
             } else {
                 // 権限が拒否された場合の処理
                 // 必要に応じて対応
@@ -107,11 +103,11 @@ class MainActivity : AppCompatActivity() {
 
     private inner class StartButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
-            val second = SettingManager.getAnswerTime()
+            val second = DataManager.getAnswerTime()
             val timerBox: TextView = findViewById(R.id.timer_box)
             timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
 
-            val countDownMillisec: Long = SettingManager.getAnswerTime() * 1000
+            val countDownMillisec: Long = DataManager.getAnswerTime() * 1000
             val timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
                 override fun onTick(millisUntilFinished: Long) {
                     // 1秒ごとにテキストを更新

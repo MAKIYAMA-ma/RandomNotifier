@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.app.AlarmManager
 
-object SettingManager {
+object DataManager {
     private var filePath = ""
     private var notifyTime1 = Calendar.getInstance()
     private var notifyTime2En = false
