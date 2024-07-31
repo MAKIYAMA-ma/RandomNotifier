@@ -1,5 +1,6 @@
 package com.example.randomnotifier
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Button
 import android.widget.TextView
@@ -16,10 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
 import android.view.View
 import kotlin.math.ceil
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
+    private val REQUEST_CODE_POST_NOTIFICATIONS= 2
 
     private val INTERVAL_MILLISECOND: Long = 200
 
@@ -45,7 +49,20 @@ class MainActivity : AppCompatActivity() {
             println("Need Permision")
             showPermissionDialog()
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13以上かどうかをチェック
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // 権限が許可されていない場合、要求する
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_CODE_POST_NOTIFICATIONS
+                )
+            }
+        }
         // SETTINGボタンによる画面遷移
         val setting_button: Button = findViewById<Button>(R.id.setting_button)
         setting_button.setOnClickListener{
