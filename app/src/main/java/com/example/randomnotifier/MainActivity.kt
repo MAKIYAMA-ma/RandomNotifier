@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     private val INTERVAL_MILLISECOND: Long = 1000
 
+    private var timer: CountDownTimer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -105,10 +107,12 @@ class MainActivity : AppCompatActivity() {
         override fun onClick(view: View) {
             val second = DataManager.getAnswerTime()
             val timerBox: TextView = findViewById(R.id.timer_box)
+
+            timer?.cancel()
             timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
 
             val countDownMillisec: Long = DataManager.getAnswerTime() * 1000
-            val timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
+            timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
                 override fun onTick(millisUntilFinished: Long) {
                     // 1秒ごとにテキストを更新
                     val second = ceil(millisUntilFinished / 1000.0).toInt()
@@ -121,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                     timerBox.text = "FINISH!!"
                 }
             }
-            timer.start()
+            timer?.start()
         }
     }
 }
