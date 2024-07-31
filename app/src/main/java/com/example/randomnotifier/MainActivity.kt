@@ -6,7 +6,6 @@ import android.widget.Button
 import android.os.Bundle
 import android.os.Build
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.app.NotificationManager
 import android.app.NotificationChannel
 import android.app.AlertDialog
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         if (alarmManager.canScheduleExactAlarms()) {
             // 権限が既に許可されている場合、アラームを設定する
             println("Already Permited")
-            scheduleNotification(SettingManager.getNotificationTime())
+            SettingManager.scheduleNextNotification(this)
         } else {
             // 権限が許可されていない場合、要求する
             println("Need Permision")
@@ -73,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // 権限が許可された場合、アラームを設定する
                 println("Permited")
-                scheduleNotification(SettingManager.getNotificationTime())
+                SettingManager.scheduleNextNotification(this)
             } else {
                 // 権限が拒否された場合の処理
                 // 必要に応じて対応
@@ -93,26 +92,5 @@ class MainActivity : AppCompatActivity() {
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-
-    private fun scheduleNotification(notificationTime: Calendar) {
-        val intent = Intent(this, NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // 既にアラームが存在するならいったん解除
-        alarmManager.cancel(pendingIntent)
-
-        alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP,
-            notificationTime.timeInMillis,
-            pendingIntent
-        )
     }
 }
