@@ -7,26 +7,209 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/setting_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/setting"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="#3F3F3F"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintVertical_bias="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="40dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="80dp" />
+
+    <TextView
+        android:id="@+id/file_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/file_label"
+        android:textSize="40sp"
+        android:gravity="left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_label"
+        app:layout_constraintTop_toBottomOf="@+id/setting_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <TextView
+        android:id="@+id/file_name_view"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:text="DUMMY"
+        android:textSize="40sp"
+        android:gravity="left"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/file_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/alarm_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/alarm_label"
+        android:textSize="40sp"
+        android:gravity="left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_label"
+        app:layout_constraintTop_toBottomOf="@+id/file_name_view"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <TextView
+        android:id="@+id/alarm1_view"
+        android:layout_width="233dp"
+        android:layout_height="55dp"
+        android:text="@string/initial_alarm"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarm1_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/alarm1_view"
+        app:layout_constraintTop_toTopOf="@+id/alarm1_view"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/alarm2_view"
+        android:layout_width="233dp"
+        android:layout_height="55dp"
+        android:text="@string/initial_alarm"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/alarm1_view"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarm2_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/alarm2_view"
+        app:layout_constraintTop_toTopOf="@+id/alarm2_view"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/alarm3_view"
+        android:layout_width="233dp"
+        android:layout_height="55dp"
+        android:text="@string/initial_alarm"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/alarm2_view"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarm3_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/alarm3_view"
+        app:layout_constraintTop_toTopOf="@+id/alarm3_view"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/timer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timer_label"
+        android:textSize="40sp"
+        android:gravity="left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_label"
+        app:layout_constraintTop_toBottomOf="@+id/alarm3_view"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.05" />
+
+    <TextView
+        android:id="@+id/timer_view"
+        android:layout_width="233dp"
+        android:layout_height="55dp"
+        android:text="@string/initial_timer"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/timer_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
     <Button
         android:id="@+id/save_button"
-        android:layout_width="150dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/save_btn"
-        android:textSize="25sp"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/return_button"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.535" />
+        app:layout_constraintTop_toBottomOf="@+id/timer_view"
+        app:layout_constraintVertical_bias="0.2" />
 
     <Button
         android:id="@+id/return_button"
-        android:layout_width="150dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/return_btn"
-        android:textSize="25sp"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"
