@@ -13,7 +13,7 @@ object SettingManager {
     private var notifyTime2 = Calendar.getInstance()
     private var notifyTime3En = false
     private var notifyTime3 = Calendar.getInstance()
-    private var answerTime = 1 * 60
+    private var answerTime: Long = 1 * 60
 
     fun init() {
         // 通知時間1 仮に6:30
@@ -100,11 +100,11 @@ object SettingManager {
     }
 
     // Getter and Setter for answerTime
-    fun getAnswerTime(): Int {
+    fun getAnswerTime(): Long {
         return answerTime
     }
 
-    fun setAnswerTime(value: Int) {
+    fun setAnswerTime(value: Long) {
         answerTime = value
     }
 

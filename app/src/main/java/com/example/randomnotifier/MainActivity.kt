@@ -3,8 +3,10 @@ package com.example.randomnotifier
 import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Button
+import android.widget.TextView
 import android.os.Bundle
 import android.os.Build
+import android.os.CountDownTimer
 import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.NotificationChannel
@@ -13,13 +15,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
+import android.view.View
 import java.util.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
+
+    private val INTERVAL_MILLISECOND: Long = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +54,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,SettingForm::class.java)
             startActivity(intent)
         }
+
+        // set function of button
+        val btStart = findViewById<Button>(R.id.start_button)
+        val btStartListener = StartButtonListener()
+        btStart.setOnClickListener(btStartListener)
     }
 
     private fun showPermissionDialog() {
@@ -91,6 +102,30 @@ class MainActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private inner class StartButtonListener : View.OnClickListener {
+        override fun onClick(view: View) {
+            val second = SettingManager.getAnswerTime()
+            val timerBox: TextView = findViewById(R.id.timer_box)
+            timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
+
+            val countDownMillisec: Long = SettingManager.getAnswerTime() * 1000
+            val timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // 1秒ごとにテキストを更新
+                    val second = ceil(millisUntilFinished / 1000.0).toInt()
+                    val timerBox: TextView = findViewById(R.id.timer_box)
+                    timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
+                }
+
+                override fun onFinish() {
+                    val timerBox: TextView = findViewById(R.id.timer_box)
+                    timerBox.text = "FINISH!!"
+                }
+            }
+            timer.start()
         }
     }
 }
