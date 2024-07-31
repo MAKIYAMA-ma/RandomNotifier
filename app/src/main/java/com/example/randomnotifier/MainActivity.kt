@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
 
-    private val INTERVAL_MILLISECOND: Long = 1000
+    private val INTERVAL_MILLISECOND: Long = 200
 
     private var timer: CountDownTimer? = null
 
