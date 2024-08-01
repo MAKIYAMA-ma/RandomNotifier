@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DataManager.init()
+        DataManager.init(this)
 
         createNotificationChannel()
 

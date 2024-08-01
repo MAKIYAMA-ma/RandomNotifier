@@ -23,21 +23,18 @@ class SettingForm : AppCompatActivity() {
         val fileNameView: TextView = findViewById(R.id.file_name_view)
         fileNameView.text = DataManager.getFilePath()
 
-        val notifyTime1 = DataManager.getNotifyTime1()
-        val notifyTime1Hour = notifyTime1.get(Calendar.HOUR_OF_DAY)
-        val notifyTime1Min = notifyTime1.get(Calendar.MINUTE)
+        val notifyTime1Hour = DataManager.getNotifyTime1Hour()
+        val notifyTime1Min = DataManager.getNotifyTime1Minute()
         val alarm1View: TextView = findViewById(R.id.alarm1_view)
         alarm1View.text = String.format("%02d:%02d", notifyTime1Hour, notifyTime1Min)
 
-        val notifyTime2 = DataManager.getNotifyTime2()
-        val notifyTime2Hour = notifyTime2.get(Calendar.HOUR_OF_DAY)
-        val notifyTime2Min = notifyTime2.get(Calendar.MINUTE)
+        val notifyTime2Hour = DataManager.getNotifyTime2Hour()
+        val notifyTime2Min = DataManager.getNotifyTime2Minute()
         val alarm2View: TextView = findViewById(R.id.alarm2_view)
         alarm2View.text = String.format("%02d:%02d", notifyTime2Hour, notifyTime2Min)
 
-        val notifyTime3 = DataManager.getNotifyTime3()
-        val notifyTime3Hour = notifyTime3.get(Calendar.HOUR_OF_DAY)
-        val notifyTime3Min = notifyTime3.get(Calendar.MINUTE)
+        val notifyTime3Hour = DataManager.getNotifyTime3Hour()
+        val notifyTime3Min = DataManager.getNotifyTime3Minute()
         val alarm3View: TextView = findViewById(R.id.alarm3_view)
         alarm3View.text = String.format("%02d:%02d", notifyTime3Hour, notifyTime3Min)
     }

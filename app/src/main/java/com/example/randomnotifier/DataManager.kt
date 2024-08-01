@@ -4,40 +4,59 @@ import java.util.*
 import android.content.Intent
 import android.app.PendingIntent
 import android.content.Context
+import android.content.SharedPreferences
 import android.app.AlarmManager
 
 object DataManager {
-    private var filePath = ""
-    private var notifyTime1 = Calendar.getInstance()
+    private var filePath: String? = ""
+    private var notifyTime1En = false
     private var notifyTime2En = false
-    private var notifyTime2 = Calendar.getInstance()
     private var notifyTime3En = false
-    private var notifyTime3 = Calendar.getInstance()
+    private var notifyTime1Hour = 6
+    private var notifyTime1Minute = 30
+    private var notifyTime2Hour = 11
+    private var notifyTime2Minute = 30
+    private var notifyTime3Hour = 20
+    private var notifyTime3Minute = 0
     private var answerTime: Long = 1 * 60
 
-    fun init() {
-        // 通知時間1 仮に6:30
-        notifyTime1 = Calendar.getInstance()
-        notifyTime1.set(Calendar.HOUR_OF_DAY, 6)
-        notifyTime1.set(Calendar.MINUTE, 30)
-        notifyTime1.set(Calendar.SECOND, 0)
+    private lateinit var sharedPreferences: SharedPreferences
+    private val KEY_QUESTION_FILE = "filePath"
+    private val KEY_NOTIFYTIME1_ENABLE = "notifyTime1Enable"
+    private val KEY_NOTIFYTIME1_HOUR = "notifyTime1Hour"
+    private val KEY_NOTIFYTIME1_MIN = "notifyTime1Minute"
+    private val KEY_NOTIFYTIME2_ENABLE = "notifyTime2Enable"
+    private val KEY_NOTIFYTIME2_HOUR = "notifyTime2Hour"
+    private val KEY_NOTIFYTIME2_MIN = "notifyTime2Minute"
+    private val KEY_NOTIFYTIME3_ENABLE = "notifyTime3Enable"
+    private val KEY_NOTIFYTIME3_HOUR = "notifyTime3Hour"
+    private val KEY_NOTIFYTIME3_MIN = "notifyTime3Minute"
+    private val KEY_ANSWER_TIME = "answerTime"
 
-        // 通知時間2 仮に11:30
-        notifyTime2 = Calendar.getInstance()
-        notifyTime2.set(Calendar.HOUR_OF_DAY, 11)
-        notifyTime2.set(Calendar.MINUTE, 30)
-        notifyTime2.set(Calendar.SECOND, 0)
-
-        // 通知時間3 仮に20:00
-        notifyTime3 = Calendar.getInstance()
-        notifyTime3.set(Calendar.HOUR_OF_DAY, 20)
-        notifyTime3.set(Calendar.MINUTE, 0)
-        notifyTime3.set(Calendar.SECOND, 0)
+    fun init(context: Context) {
+        sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        loadSettingData()
     }
 
     fun loadSettingData() {
-        // TODO
-        // 設定ファイルを読む
+        filePath = getSettingString(KEY_QUESTION_FILE, "")
+
+        // 通知時間1 仮に6:30
+        notifyTime1En = getSettingBoolean(KEY_NOTIFYTIME1_ENABLE, true)
+        notifyTime1Hour = getSettingInt(KEY_NOTIFYTIME1_HOUR, 6)
+        notifyTime1Minute = getSettingInt(KEY_NOTIFYTIME1_MIN, 30)
+
+        // 通知時間2 仮に11:30
+        notifyTime2En = getSettingBoolean(KEY_NOTIFYTIME2_ENABLE, true)
+        notifyTime2Hour = getSettingInt(KEY_NOTIFYTIME2_HOUR, 11)
+        notifyTime2Minute = getSettingInt(KEY_NOTIFYTIME2_MIN, 30)
+
+        // 通知時間3 仮に20:00
+        notifyTime3En = getSettingBoolean(KEY_NOTIFYTIME3_ENABLE, true)
+        notifyTime3Hour = getSettingInt(KEY_NOTIFYTIME3_HOUR, 20)
+        notifyTime3Minute = getSettingInt(KEY_NOTIFYTIME3_MIN, 0)
+
+        answerTime = getSettingLong(KEY_ANSWER_TIME, 1*60)
     }
 
     fun saveSettingData() {
@@ -46,7 +65,7 @@ object DataManager {
     }
 
     // Getter and Setter for filePath
-    fun getFilePath(): String {
+    fun getFilePath(): String? {
         return filePath
     }
 
@@ -54,13 +73,30 @@ object DataManager {
         filePath = value
     }
 
-    // Getter and Setter for notifyTime1
-    fun getNotifyTime1(): Calendar {
-        return notifyTime1
+    // Getter and Setter for notifyTime1En
+    fun isNotifyTime1En(): Boolean {
+        return notifyTime1En
     }
 
-    fun setNotifyTime1(value: Calendar) {
-        notifyTime1 = value
+    fun setNotifyTime1En(value: Boolean) {
+        notifyTime1En = value
+    }
+
+    // Getter and Setter for notifyTime1
+    fun getNotifyTime1Hour(): Int {
+        return notifyTime1Hour
+    }
+
+    fun setNotifyTime1Hour(value: Int) {
+        notifyTime1Hour = value
+    }
+
+    fun getNotifyTime1Minute(): Int {
+        return notifyTime1Minute
+    }
+
+    fun setNotifyTime1Minute(value: Int) {
+        notifyTime1Minute = value
     }
 
     // Getter and Setter for notifyTime2En
@@ -73,12 +109,20 @@ object DataManager {
     }
 
     // Getter and Setter for notifyTime2
-    fun getNotifyTime2(): Calendar {
-        return notifyTime2
+    fun getNotifyTime2Hour(): Int {
+        return notifyTime2Hour
     }
 
-    fun setNotifyTime2(value: Calendar) {
-        notifyTime2 = value
+    fun setNotifyTime2Hour(value: Int) {
+        notifyTime2Hour = value
+    }
+
+    fun getNotifyTime2Minute(): Int {
+        return notifyTime2Minute
+    }
+
+    fun setNotifyTime2Minute(value: Int) {
+        notifyTime2Minute = value
     }
 
     // Getter and Setter for notifyTime3En
@@ -91,12 +135,20 @@ object DataManager {
     }
 
     // Getter and Setter for notifyTime3
-    fun getNotifyTime3(): Calendar {
-        return notifyTime3
+    fun getNotifyTime3Hour(): Int {
+        return notifyTime3Hour
     }
 
-    fun setNotifyTime3(value: Calendar) {
-        notifyTime3 = value
+    fun setNotifyTime3Hour(value: Int) {
+        notifyTime3Hour = value
+    }
+
+    fun getNotifyTime3Minute(): Int {
+        return notifyTime3Minute
+    }
+
+    fun setNotifyTime3Minute(value: Int) {
+        notifyTime3Minute = value
     }
 
     // Getter and Setter for answerTime
@@ -154,5 +206,46 @@ object DataManager {
 
     fun scheduleNextNotification(context: Context) {
         scheduleNotification(context, getNotificationTime())
+    }
+
+    // wrapper of sharedPreferences
+    fun saveSetting(key: String, value: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key, value)
+        editor.apply()
+    }
+
+    fun saveSetting(key: String, value: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
+        editor.apply()
+    }
+
+    fun saveSetting(key: String, value: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+    }
+
+    fun saveSetting(key: String, value: Long) {
+        val editor = sharedPreferences.edit()
+        editor.putLong(key, value)
+        editor.apply()
+    }
+
+    fun getSettingString(key: String, defaultValue: String): String? {
+        return sharedPreferences.getString(key, defaultValue)
+    }
+
+    fun getSettingInt(key: String, defaultValue: Int): Int {
+        return sharedPreferences.getInt(key, defaultValue)
+    }
+
+    fun getSettingBoolean(key: String, defaultValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, defaultValue)
+    }
+
+    fun getSettingLong(key: String, defaultValue: Long): Long {
+        return sharedPreferences.getLong(key, defaultValue)
     }
 }
