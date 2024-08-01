@@ -61,7 +61,21 @@ object DataManager {
 
     fun saveSettingData() {
         // TODO
-        // 設定ファイルに保存する
+        filePath?.let {
+            saveSetting(KEY_QUESTION_FILE, it)
+        }
+
+        saveSetting(KEY_NOTIFYTIME1_ENABLE, notifyTime1En)
+        saveSetting(KEY_NOTIFYTIME1_HOUR, notifyTime1Hour)
+        saveSetting(KEY_NOTIFYTIME1_MIN, notifyTime1Minute)
+        saveSetting(KEY_NOTIFYTIME2_ENABLE, notifyTime2En)
+        saveSetting(KEY_NOTIFYTIME2_HOUR, notifyTime2Hour)
+        saveSetting(KEY_NOTIFYTIME2_MIN, notifyTime2Minute)
+        saveSetting(KEY_NOTIFYTIME3_ENABLE, notifyTime3En)
+        saveSetting(KEY_NOTIFYTIME3_HOUR, notifyTime3Hour)
+        saveSetting(KEY_NOTIFYTIME3_MIN, notifyTime3Minute)
+
+        saveSetting(KEY_ANSWER_TIME, answerTime)
     }
 
     // Getter and Setter for filePath
