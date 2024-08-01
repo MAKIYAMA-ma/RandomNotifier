@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             timer?.cancel()
             timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
 
-            val countDownMillisec: Long = DataManager.getAnswerTime() * 1000
+            val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000
             timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
                 override fun onTick(millisUntilFinished: Long) {
                     // 1秒ごとにテキストを更新

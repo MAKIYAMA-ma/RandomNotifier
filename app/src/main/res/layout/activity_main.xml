@@ -49,7 +49,7 @@
         android:id="@+id/timer_box"
         android:layout_width="233dp"
         android:layout_height="55dp"
-        android:text="@string/initial_timer"
+        android:text="@string/initial_alarm"
         android:textSize="50sp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"

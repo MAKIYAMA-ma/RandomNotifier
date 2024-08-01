@@ -18,7 +18,7 @@ object DataManager {
     private var notifyTime2Minute = 30
     private var notifyTime3Hour = 20
     private var notifyTime3Minute = 0
-    private var answerTime: Long = 1 * 60
+    private var answerTime: Int = 1 * 60
 
     private lateinit var sharedPreferences: SharedPreferences
     private val KEY_QUESTION_FILE = "filePath"
@@ -56,7 +56,7 @@ object DataManager {
         notifyTime3Hour = getSettingInt(KEY_NOTIFYTIME3_HOUR, 20)
         notifyTime3Minute = getSettingInt(KEY_NOTIFYTIME3_MIN, 0)
 
-        answerTime = getSettingLong(KEY_ANSWER_TIME, 1*60)
+        answerTime = getSettingInt(KEY_ANSWER_TIME, 1*60)
     }
 
     fun saveSettingData() {
@@ -166,11 +166,11 @@ object DataManager {
     }
 
     // Getter and Setter for answerTime
-    fun getAnswerTime(): Long {
+    fun getAnswerTime(): Int {
         return answerTime
     }
 
-    fun setAnswerTime(value: Long) {
+    fun setAnswerTime(value: Int) {
         answerTime = value
     }
 

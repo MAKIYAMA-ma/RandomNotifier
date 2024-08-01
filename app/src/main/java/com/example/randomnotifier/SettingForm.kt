@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.widget.Button
 import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.NumberPicker
 import androidx.appcompat.widget.SwitchCompat
 import android.os.Bundle
 import android.content.Intent
@@ -95,6 +96,24 @@ class SettingForm : AppCompatActivity() {
             timePickerDialog.show()
         }
 
+        val minutePicker: NumberPicker = findViewById(R.id.answertime_minute_picker)
+        val secondPicker: NumberPicker = findViewById(R.id.answertime_second_picker)
+
+        minutePicker.minValue = 0
+        minutePicker.maxValue = 59
+        secondPicker.minValue = 0
+        secondPicker.maxValue = 59
+
+        minutePicker.setFormatter { String.format("%02d", it) }
+        secondPicker.setFormatter { String.format("%02d", it) }
+        val anserTime = DataManager.getAnswerTime()
+
+        minutePicker.wrapSelectorWheel = true
+        secondPicker.wrapSelectorWheel = true
+
+        minutePicker.value = anserTime / 60
+        secondPicker.value = anserTime % 60
+
         val btSave = findViewById<Button>(R.id.save_button)
         val btSaveListener = SaveButtonListener()
         btSave.setOnClickListener(btSaveListener)
@@ -116,6 +135,11 @@ class SettingForm : AppCompatActivity() {
             DataManager.setNotifyTime3En(alarm3Switch.isChecked)
             DataManager.setNotifyTime3Hour(notifyTime3Hour)
             DataManager.setNotifyTime3Minute(notifyTime3Min)
+
+            val minutePicker: NumberPicker = findViewById(R.id.answertime_minute_picker)
+            val secondPicker: NumberPicker = findViewById(R.id.answertime_second_picker)
+            val answerTime = minutePicker.value * 60 + secondPicker.value
+            DataManager.setAnswerTime(answerTime)
 
             DataManager.saveSettingData()
         }
