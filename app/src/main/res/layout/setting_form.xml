@@ -178,7 +178,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintVertical_bias="0.05" />
 
-    <NumberPicker
+    <com.example.randomnotifier.CustomNumberPicker
         android:id="@+id/answertime_minute_picker"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
@@ -195,6 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:text=":"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.05"
@@ -202,7 +203,7 @@
         app:layout_constraintTop_toTopOf="@+id/answertime_minute_picker"
         app:layout_constraintVertical_bias="0.0" />
 
-    <NumberPicker
+    <com.example.randomnotifier.CustomNumberPicker
         android:id="@+id/answertime_second_picker"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
