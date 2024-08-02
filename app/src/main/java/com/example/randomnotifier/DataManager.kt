@@ -36,9 +36,16 @@ object DataManager {
     private val KEY_NOTIFYTIME3_MIN    = "notifyTime3Minute"
     private val KEY_ANSWER_TIME        = "answerTime"
 
+    @Synchronized
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
         loadSettingData()
+        isInUse = true
+    }
+
+    @Synchronized
+    fun isInUse(): Boolean {
+        return isInUse
     }
 
     fun loadSettingData() {
@@ -177,27 +184,68 @@ object DataManager {
         answerTime = value
     }
 
-    private fun getNotificationTime(): Calendar {
-        // val cur_calendar = Calendar.getInstance()
-        // cur_calendar.add(Calendar.SECOND, 5)
+    private fun getNotificationTime(): Calendar? {
+        var nearestTime: Calendar? = null
 
-        // if (notifyTime1.before(cur_calendar)) {
-        //     notifyTime1.add(Calendar.DAY_OF_MONTH, 1)
-        // }
-        // if (notifyTime2.before(cur_calendar)) {
-        //     notifyTime2.add(Calendar.DAY_OF_MONTH, 1)
-        // }
-        // if (notifyTime3.before(cur_calendar)) {
-        //     notifyTime3.add(Calendar.DAY_OF_MONTH, 1)
-        // }
+        val notifyTime1 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, notifyTime1Hour)
+            set(Calendar.MINUTE, notifyTime1Minute)
+            set(Calendar.SECOND, 0)
+        }
 
-        // return listOf(notifyTime1, notifyTime2, notifyTime3).minByOrNull { it.timeInMillis }!!
+        val notifyTime2 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, notifyTime2Hour)
+            set(Calendar.MINUTE, notifyTime2Minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        val notifyTime3 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, notifyTime3Hour)
+            set(Calendar.MINUTE, notifyTime3Minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // 5秒後を基準に、既に今日は終わっている時刻は明日にずらす
+        val curCalendar = Calendar.getInstance().apply {
+            add(Calendar.SECOND, 5)
+        }
+
+        if (notifyTime1.before(curCalendar)) {
+            notifyTime1.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        if (notifyTime2.before(curCalendar)) {
+            notifyTime2.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        if (notifyTime3.before(curCalendar)) {
+            notifyTime3.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        // Enableのアラームの中から直近の日時を選ぶ
+        if (notifyTime1En && (nearestTime == null || notifyTime1.before(nearestTime))) {
+            nearestTime = notifyTime1
+        }
+        if (notifyTime2En && (nearestTime == null || notifyTime2.before(nearestTime))) {
+            nearestTime = notifyTime2
+        }
+        if (notifyTime3En && (nearestTime == null || notifyTime3.before(nearestTime))) {
+            nearestTime = notifyTime3
+        }
+
+        // Debug logging
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        println("Current time: ${format.format(curCalendar.time)}")
+        println("Notify time 1: ${format.format(notifyTime1.time)} (enabled: $notifyTime1En)")
+        println("Notify time 2: ${format.format(notifyTime2.time)} (enabled: $notifyTime2En)")
+        println("Notify time 3: ${format.format(notifyTime3.time)} (enabled: $notifyTime3En)")
+        println("Nearest time: ${nearestTime?.let { format.format(it.time) }}")
+
+        return nearestTime
 
         // for debug
         // 10秒後を返す
-        val cur_calendar = Calendar.getInstance()
-        cur_calendar.add(Calendar.SECOND, 10)
-        return cur_calendar
+        // val curCalendar = Calendar.getInstance()
+        // curCalendar.add(Calendar.SECOND, 10)
+        // return curCalendar
     }
 
     private fun scheduleNotification(context: Context, notificationTime: Calendar) {
@@ -226,7 +274,10 @@ object DataManager {
     }
 
     fun scheduleNextNotification(context: Context) {
-        scheduleNotification(context, getNotificationTime())
+        println(context)
+        getNotificationTime()?.let {
+            scheduleNotification(context, it)
+        }
     }
 
     // wrapper of sharedPreferences
