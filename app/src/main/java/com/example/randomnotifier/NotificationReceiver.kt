@@ -1,12 +1,14 @@
 package com.example.randomnotifier
 
-import android.app.TaskStackBuilder
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -16,15 +18,26 @@ class NotificationReceiver : BroadcastReceiver() {
         stackBuilder.addNextIntentWithParentStack(resultIntent)
         val resultPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
+        // for debug
+        val cur_calendar = Calendar.getInstance()
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val titleStr = format.format(cur_calendar.time)
+
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("定期通知")
+            .setContentTitle(titleStr)
             .setContentText("これは指定された時間に送信された通知です")
             .setContentIntent(resultPendingIntent) // 通知をタップしたときのインテントを設定
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true) // 通知をタップした後に自動で消す
             .build()
 
+        if(!DataManager.isInUse()) {
+            DataManager.init(context)
+        }
+
+        // アラームが発動したら、次のアラームを仕掛ける
+        DataManager.scheduleNextNotification(context)
         println("Receive")
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(1, notification)
