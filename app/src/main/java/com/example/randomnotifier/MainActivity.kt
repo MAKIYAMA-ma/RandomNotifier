@@ -1,24 +1,24 @@
 package com.example.randomnotifier
 
 import android.Manifest
-import android.content.pm.PackageManager
-import android.widget.Button
-import android.widget.TextView
-import android.os.Bundle
-import android.os.Build
-import android.os.CountDownTimer
 import android.app.AlarmManager
-import android.app.NotificationManager
-import android.app.NotificationChannel
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.View
-import kotlin.math.ceil
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,13 +33,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DataManager.init(this)
+        if(!DataManager.isInUse()) {
+            DataManager.init(this)
+        }
 
         createNotificationChannel()
 
         // 権限が許可されているか確認
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        println(alarmManager.canScheduleExactAlarms())
         if (alarmManager.canScheduleExactAlarms()) {
             // 権限が既に許可されている場合、アラームを設定する
             println("Already Permited")
@@ -63,6 +64,9 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+
+        setTimerBoxText(DataManager.getAnswerTime())
+
         // SETTINGボタンによる画面遷移
         val setting_button: Button = findViewById<Button>(R.id.setting_button)
         setting_button.setOnClickListener{
@@ -120,26 +124,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setTimerBoxText(second: Int) {
+        val timerBox: TextView = findViewById(R.id.timer_box)
+        if(second > 0) {
+            timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
+        } else {
+            timerBox.text = "FINISH!!"
+        }
+    }
+
     private inner class StartButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
-            val second = DataManager.getAnswerTime()
-            val timerBox: TextView = findViewById(R.id.timer_box)
-
             timer?.cancel()
-            timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
+            setTimerBoxText(DataManager.getAnswerTime())
 
             val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000
             timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
                 override fun onTick(millisUntilFinished: Long) {
-                    // 1秒ごとにテキストを更新
-                    val second = ceil(millisUntilFinished / 1000.0).toInt()
-                    val timerBox: TextView = findViewById(R.id.timer_box)
-                    timerBox.text = String.format("%02d:%02d", second / 60, second % 60)
+                    setTimerBoxText(ceil(millisUntilFinished / 1000.0).toInt())
                 }
 
                 override fun onFinish() {
-                    val timerBox: TextView = findViewById(R.id.timer_box)
-                    timerBox.text = "FINISH!!"
+                    setTimerBoxText(0)
                 }
             }
             timer?.start()

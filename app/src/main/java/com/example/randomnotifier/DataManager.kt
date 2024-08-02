@@ -1,37 +1,40 @@
 package com.example.randomnotifier
 
-import java.util.*
-import android.content.Intent
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import android.app.AlarmManager
+import java.text.SimpleDateFormat
+import java.util.*
 
 object DataManager {
+    @Volatile private var isInUse = false
+
     private var filePath: String? = ""
-    private var notifyTime1En = false
-    private var notifyTime2En = false
-    private var notifyTime3En = false
-    private var notifyTime1Hour = 6
+    private var notifyTime1En     = false
+    private var notifyTime2En     = false
+    private var notifyTime3En     = false
+    private var notifyTime1Hour   = 6
     private var notifyTime1Minute = 30
-    private var notifyTime2Hour = 11
+    private var notifyTime2Hour   = 11
     private var notifyTime2Minute = 30
-    private var notifyTime3Hour = 20
+    private var notifyTime3Hour   = 20
     private var notifyTime3Minute = 0
-    private var answerTime: Int = 1 * 60
+    private var answerTime: Int   = 1 * 60
 
     private lateinit var sharedPreferences: SharedPreferences
-    private val KEY_QUESTION_FILE = "filePath"
+    private val KEY_QUESTION_FILE      = "filePath"
     private val KEY_NOTIFYTIME1_ENABLE = "notifyTime1Enable"
-    private val KEY_NOTIFYTIME1_HOUR = "notifyTime1Hour"
-    private val KEY_NOTIFYTIME1_MIN = "notifyTime1Minute"
+    private val KEY_NOTIFYTIME1_HOUR   = "notifyTime1Hour"
+    private val KEY_NOTIFYTIME1_MIN    = "notifyTime1Minute"
     private val KEY_NOTIFYTIME2_ENABLE = "notifyTime2Enable"
-    private val KEY_NOTIFYTIME2_HOUR = "notifyTime2Hour"
-    private val KEY_NOTIFYTIME2_MIN = "notifyTime2Minute"
+    private val KEY_NOTIFYTIME2_HOUR   = "notifyTime2Hour"
+    private val KEY_NOTIFYTIME2_MIN    = "notifyTime2Minute"
     private val KEY_NOTIFYTIME3_ENABLE = "notifyTime3Enable"
-    private val KEY_NOTIFYTIME3_HOUR = "notifyTime3Hour"
-    private val KEY_NOTIFYTIME3_MIN = "notifyTime3Minute"
-    private val KEY_ANSWER_TIME = "answerTime"
+    private val KEY_NOTIFYTIME3_HOUR   = "notifyTime3Hour"
+    private val KEY_NOTIFYTIME3_MIN    = "notifyTime3Minute"
+    private val KEY_ANSWER_TIME        = "answerTime"
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
@@ -211,6 +214,10 @@ object DataManager {
         // 既にアラームが存在するならいったん解除
         alarmManager.cancel(pendingIntent)
 
+        // for debug
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        println(format.format(notificationTime.time))
+
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             notificationTime.timeInMillis,
@@ -241,12 +248,6 @@ object DataManager {
         editor.apply()
     }
 
-    fun saveSetting(key: String, value: Long) {
-        val editor = sharedPreferences.edit()
-        editor.putLong(key, value)
-        editor.apply()
-    }
-
     fun getSettingString(key: String, defaultValue: String): String? {
         return sharedPreferences.getString(key, defaultValue)
     }
@@ -257,9 +258,5 @@ object DataManager {
 
     fun getSettingBoolean(key: String, defaultValue: Boolean): Boolean {
         return sharedPreferences.getBoolean(key, defaultValue)
-    }
-
-    fun getSettingLong(key: String, defaultValue: Long): Long {
-        return sharedPreferences.getLong(key, defaultValue)
     }
 }
