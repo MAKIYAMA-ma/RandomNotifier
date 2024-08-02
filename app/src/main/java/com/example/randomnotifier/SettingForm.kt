@@ -1,16 +1,16 @@
 package com.example.randomnotifier
 
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.TimePicker
-import android.widget.NumberPicker
-import androidx.appcompat.widget.SwitchCompat
-import android.os.Bundle
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import java.util.*
-import android.view.View
 
 class SettingForm : AppCompatActivity() {
     var notifyTime1Hour = DataManager.getNotifyTime1Hour()
@@ -119,6 +119,10 @@ class SettingForm : AppCompatActivity() {
         btSave.setOnClickListener(btSaveListener)
     }
 
+    private fun resetAlarm() {
+        DataManager.scheduleNextNotification(this)
+    }
+
     private inner class SaveButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             val alarm1Switch: SwitchCompat = findViewById(R.id.alarm1_switch)
@@ -142,6 +146,7 @@ class SettingForm : AppCompatActivity() {
             DataManager.setAnswerTime(answerTime)
 
             DataManager.saveSettingData()
+            resetAlarm()
         }
     }
 }
