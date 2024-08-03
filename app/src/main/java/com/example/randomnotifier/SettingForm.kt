@@ -2,23 +2,31 @@ package com.example.randomnotifier
 
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.View
 import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.TimePicker
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import java.util.*
 
 class SettingForm : AppCompatActivity() {
+    var fileUri :String = ""
     var notifyTime1Hour = DataManager.getNotifyTime1Hour()
     var notifyTime1Min = DataManager.getNotifyTime1Minute()
     var notifyTime2Hour = DataManager.getNotifyTime2Hour()
     var notifyTime2Min = DataManager.getNotifyTime2Minute()
     var notifyTime3Hour = DataManager.getNotifyTime3Hour()
     var notifyTime3Min = DataManager.getNotifyTime3Minute()
+
+    private lateinit var selectFileLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +41,35 @@ class SettingForm : AppCompatActivity() {
 
         // SettingManagerに基づいて各フォームの値を入れる
         val fileNameView: TextView = findViewById(R.id.file_name_view)
-        fileNameView.text = DataManager.getFilePath()
+        DataManager.getFilePath()?.let {
+            fileUri = it
+        }
+        println(fileUri)
+        fileNameView.text = getFileName(Uri.parse(fileUri))
+
+        // selectFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        //     uri?.let {
+        //         // テキストファイルの内容をTextViewに表示
+        //         // val fileContent = readTextFromUri(uri)
+        //         // fileNameView.text = fileContent
+        //         fileUri = uri.toString()
+        //         fileNameView.text = getFileName(uri)
+        //     }
+        // }
+        selectFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    // val fileContent = readTextFromUri(uri)
+                    // fileNameView.text = fileContent
+                    fileUri = uri.toString()
+                    fileNameView.text = getFileName(uri)
+                }
+            }
+        }
+
+        fileNameView.setOnClickListener {
+            openFileSelector()
+        }
 
         val alarm1View: TextView = findViewById(R.id.alarm1_view)
         alarm1View.text = String.format("%02d:%02d", notifyTime1Hour, notifyTime1Min)
@@ -123,8 +159,46 @@ class SettingForm : AppCompatActivity() {
         DataManager.scheduleNextNotification(this)
     }
 
+    private fun openFileSelector() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/plain"
+        }
+        selectFileLauncher.launch(intent)
+    }
+
+    private fun getFileName(uri: Uri): String? {
+        var fileName: String? = null
+        val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    fileName = it.getString(nameIndex)
+                }
+            }
+        }
+        return fileName
+    }
+
+    // private fun readTextFromUri(uri: Uri): String {
+    //     val inputStream = contentResolver.openInputStream(uri)
+    //     val reader = BufferedReader(InputStreamReader(inputStream))
+    //     val stringBuilder = StringBuilder()
+    //     reader.use {
+    //         var line = it.readLine()
+    //         while (line != null) {
+    //             stringBuilder.append(line).append('\n')
+    //             line = it.readLine()
+    //         }
+    //     }
+    //     return stringBuilder.toString()
+    // }
+
     private inner class SaveButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
+            DataManager.setFilePath(fileUri)
+
             val alarm1Switch: SwitchCompat = findViewById(R.id.alarm1_switch)
             DataManager.setNotifyTime1En(alarm1Switch.isChecked)
             DataManager.setNotifyTime1Hour(notifyTime1Hour)
