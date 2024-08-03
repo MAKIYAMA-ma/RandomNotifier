@@ -15,12 +15,11 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
@@ -69,14 +68,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         val questionView: TextView = findViewById(R.id.question_view)
-        DataManager.getFilePath()?.let {
-            // TODO とりあえず一行目を取得
-            println(it)
-            questionView.text = readLineFromUri(Uri.parse(it), 1)
-            println(questionView.text)
-        }
+        questionView.text = DataManager.getQuestion()
 
         setTimerBoxText(DataManager.getAnswerTime())
+
+        val hintCb: CheckBox = findViewById(R.id.hint_cb)
+        hintCb.setOnCheckedChangeListener { _, isChecked ->
+            val hintView: TextView = findViewById(R.id.hint_box)
+            if (isChecked) {
+                hintView.text = DataManager.getHint()
+            } else {
+                hintView.text = ""
+            }
+        }
 
         // SETTINGボタンによる画面遷移
         val setting_button: Button = findViewById<Button>(R.id.setting_button)
@@ -142,27 +146,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             timerBox.text = "FINISH!!"
         }
-    }
-
-    private fun readLineFromUri(uri: Uri, lineNum: Int): String {
-        val inputStream = contentResolver.openInputStream(uri)
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        var result = ""
-
-        reader.use {
-            var currentLineNum = 1
-            var line = it.readLine()
-
-            while (line != null) {
-                if (currentLineNum == lineNum) {
-                    result = line
-                    break
-                }
-                currentLineNum++
-                line = it.readLine()
-            }
-        }
-        return result
     }
 
     private inner class StartButtonListener : View.OnClickListener {

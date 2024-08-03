@@ -5,6 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,6 +15,10 @@ object DataManager {
     @Volatile private var isInUse = false
 
     private var filePath: String? = ""
+    private var lineCount: Int = 0
+    private var question: String = ""
+    private var hint: String = ""
+
     private var notifyTime1En     = false
     private var notifyTime2En     = false
     private var notifyTime3En     = false
@@ -25,6 +32,9 @@ object DataManager {
 
     private lateinit var sharedPreferences: SharedPreferences
     private val KEY_QUESTION_FILE      = "filePath"
+    private val KEY_LINE_COUNT         = "lineCount"
+    private val KEY_QEUSTION           = "question"
+    private val KEY_HINT               = "hint"
     private val KEY_NOTIFYTIME1_ENABLE = "notifyTime1Enable"
     private val KEY_NOTIFYTIME1_HOUR   = "notifyTime1Hour"
     private val KEY_NOTIFYTIME1_MIN    = "notifyTime1Minute"
@@ -50,6 +60,13 @@ object DataManager {
 
     fun loadSettingData() {
         filePath = getSettingString(KEY_QUESTION_FILE, "")
+        lineCount = getSettingInt(KEY_LINE_COUNT, 0)
+        getSettingString(KEY_QEUSTION, "")?.let {
+            question = it
+        }
+        getSettingString(KEY_HINT, "")?.let {
+            hint = it
+        }
 
         // 通知時間1 仮に6:30
         notifyTime1En = getSettingBoolean(KEY_NOTIFYTIME1_ENABLE, true)
@@ -74,6 +91,9 @@ object DataManager {
         filePath?.let {
             saveSetting(KEY_QUESTION_FILE, it)
         }
+        saveSetting(KEY_LINE_COUNT, lineCount)
+        saveSetting(KEY_QEUSTION, question)
+        saveSetting(KEY_HINT, hint)
 
         saveSetting(KEY_NOTIFYTIME1_ENABLE, notifyTime1En)
         saveSetting(KEY_NOTIFYTIME1_HOUR, notifyTime1Hour)
@@ -93,8 +113,36 @@ object DataManager {
         return filePath
     }
 
-    fun setFilePath(value: String) {
+    fun setFilePath(context: Context, value: String) {
         filePath = value
+
+        // 同時に行数を更新する
+        lineCount = getLineCountFromUri(context, Uri.parse(filePath))
+    }
+
+    fun updateQuestion(context: Context) {
+        filePath?.let {
+            if(lineCount > 0) {
+                val selectedLine = (1..lineCount).random()
+                val line = readLineFromUri(context, Uri.parse(it), selectedLine)
+                val strs = line.split("	")
+                println(strs)
+                question = strs[0]
+                if(strs.size > 1) {
+                    hint = strs[1]
+                } else {
+                    hint = ""
+                }
+            }
+        }
+    }
+
+    fun getQuestion(): String {
+        return question
+    }
+
+    fun getHint(): String {
+        return hint
     }
 
     // Getter and Setter for notifyTime1En
@@ -278,6 +326,40 @@ object DataManager {
         getNotificationTime()?.let {
             scheduleNotification(context, it)
         }
+    }
+
+    private fun getLineCountFromUri(context: Context, uri: Uri): Int {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        var lineCount = 0
+
+        reader.use {
+            while (it.readLine() != null) {
+                lineCount++
+            }
+        }
+        return lineCount
+    }
+
+    private fun readLineFromUri(context: Context, uri: Uri, lineNum: Int): String {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        var result = ""
+
+        reader.use {
+            var currentLineNum = 1
+            var line = it.readLine()
+
+            while (line != null) {
+                if (currentLineNum == lineNum) {
+                    result = line
+                    break
+                }
+                currentLineNum++
+                line = it.readLine()
+            }
+        }
+        return result
     }
 
     // wrapper of sharedPreferences

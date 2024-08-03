@@ -147,10 +147,6 @@ class SettingForm : AppCompatActivity() {
         btSave.setOnClickListener(btSaveListener)
     }
 
-    private fun resetAlarm() {
-        DataManager.scheduleNextNotification(this)
-    }
-
     private fun openFileSelector() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -175,7 +171,8 @@ class SettingForm : AppCompatActivity() {
 
     private inner class SaveButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
-            DataManager.setFilePath(fileUri)
+            DataManager.setFilePath(this@SettingForm, fileUri)
+            DataManager.updateQuestion(this@SettingForm)
 
             val alarm1Switch: SwitchCompat = findViewById(R.id.alarm1_switch)
             DataManager.setNotifyTime1En(alarm1Switch.isChecked)
@@ -198,7 +195,7 @@ class SettingForm : AppCompatActivity() {
             DataManager.setAnswerTime(answerTime)
 
             DataManager.saveSettingData()
-            resetAlarm()
+            DataManager.scheduleNextNotification(this@SettingForm)
         }
     }
 }

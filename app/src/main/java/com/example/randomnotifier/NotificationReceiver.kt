@@ -23,18 +23,21 @@ class NotificationReceiver : BroadcastReceiver() {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val titleStr = format.format(cur_calendar.time)
 
+        if(!DataManager.isInUse()) {
+            DataManager.init(context)
+        }
+
+        // ランダムに問題を更新
+        DataManager.updateQuestion(context)
+
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(titleStr)
-            .setContentText("これは指定された時間に送信された通知です")
+            .setContentText(DataManager.getQuestion())
             .setContentIntent(resultPendingIntent) // 通知をタップしたときのインテントを設定
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true) // 通知をタップした後に自動で消す
             .build()
-
-        if(!DataManager.isInUse()) {
-            DataManager.init(context)
-        }
 
         // アラームが発動したら、次のアラームを仕掛ける
         DataManager.scheduleNextNotification(context)
