@@ -34,13 +34,13 @@
 
     <TextView
         android:id="@+id/hint_box"
-        android:layout_width="208dp"
-        android:layout_height="49dp"
-        android:text="@string/hint_box"
+        android:layout_width="229dp"
+        android:layout_height="45dp"
         android:gravity="center"
+        android:text="@string/hint_box"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.586"
         app:layout_constraintStart_toStartOf="@+id/hint_cb"
         app:layout_constraintTop_toTopOf="@+id/hint_cb"
         app:layout_constraintVertical_bias="0.0" />
