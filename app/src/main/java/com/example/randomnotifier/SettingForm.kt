@@ -47,18 +47,10 @@ class SettingForm : AppCompatActivity() {
         println(fileUri)
         fileNameView.text = getFileName(Uri.parse(fileUri))
 
-        // selectFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        //     uri?.let {
-        //         // テキストファイルの内容をTextViewに表示
-        //         // val fileContent = readTextFromUri(uri)
-        //         // fileNameView.text = fileContent
-        //         fileUri = uri.toString()
-        //         fileNameView.text = getFileName(uri)
-        //     }
-        // }
         selectFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.data?.let { uri ->
+                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     // val fileContent = readTextFromUri(uri)
                     // fileNameView.text = fileContent
                     fileUri = uri.toString()
@@ -162,7 +154,7 @@ class SettingForm : AppCompatActivity() {
     private fun openFileSelector() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/plain"
+            type = "text/*"
         }
         selectFileLauncher.launch(intent)
     }
@@ -180,20 +172,6 @@ class SettingForm : AppCompatActivity() {
         }
         return fileName
     }
-
-    // private fun readTextFromUri(uri: Uri): String {
-    //     val inputStream = contentResolver.openInputStream(uri)
-    //     val reader = BufferedReader(InputStreamReader(inputStream))
-    //     val stringBuilder = StringBuilder()
-    //     reader.use {
-    //         var line = it.readLine()
-    //         while (line != null) {
-    //             stringBuilder.append(line).append('\n')
-    //             line = it.readLine()
-    //         }
-    //     }
-    //     return stringBuilder.toString()
-    // }
 
     private inner class SaveButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
