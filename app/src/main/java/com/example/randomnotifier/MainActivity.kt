@@ -8,6 +8,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -18,6 +19,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
@@ -63,6 +66,14 @@ class MainActivity : AppCompatActivity() {
                     REQUEST_CODE_POST_NOTIFICATIONS
                 )
             }
+        }
+
+        val questionView: TextView = findViewById(R.id.question_view)
+        DataManager.getFilePath()?.let {
+            // TODO とりあえず一行目を取得
+            println(it)
+            questionView.text = readLineFromUri(Uri.parse(it), 1)
+            println(questionView.text)
         }
 
         setTimerBoxText(DataManager.getAnswerTime())
@@ -131,6 +142,27 @@ class MainActivity : AppCompatActivity() {
         } else {
             timerBox.text = "FINISH!!"
         }
+    }
+
+    private fun readLineFromUri(uri: Uri, lineNum: Int): String {
+        val inputStream = contentResolver.openInputStream(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        var result = ""
+
+        reader.use {
+            var currentLineNum = 1
+            var line = it.readLine()
+
+            while (line != null) {
+                if (currentLineNum == lineNum) {
+                    result = line
+                    break
+                }
+                currentLineNum++
+                line = it.readLine()
+            }
+        }
+        return result
     }
 
     private inner class StartButtonListener : View.OnClickListener {
