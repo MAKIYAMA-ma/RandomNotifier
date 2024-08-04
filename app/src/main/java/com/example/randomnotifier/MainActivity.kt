@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                     setTimerBoxText(0)
                 }
             )
-            timer?.startNew()
+            timer?.start()
             val btStop = findViewById<Button>(R.id.stop_button)
             btStop.text = getString(R.string.stop)
         }

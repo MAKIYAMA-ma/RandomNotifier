@@ -7,38 +7,43 @@ class CustomCountDownTimer(
     private val countDownInterval: Long,
     private val onTickAction: (Long) -> Unit,
     private val onFinishAction: () -> Unit
-) : CountDownTimer(millisInFuture, countDownInterval) {
+) {
+
+    private var countDownTimer: CountDownTimer? = null
 
     private var timeRemaining: Long = millisInFuture
     private var isPaused: Boolean = false
 
-    override fun onTick(millisUntilFinished: Long) {
-        if (!isPaused) {
-            onTickAction(millisUntilFinished)
-        }
+    fun start() {
+        startNewTimer(millisInFuture)
     }
 
-    override fun onFinish() {
-        onFinishAction()
+    fun cancel() {
+        countDownTimer?.cancel()
     }
 
     fun pause() {
         isPaused = true
-        cancel()
+        countDownTimer?.cancel()
     }
 
     fun resume() {
+        startNewTimer(timeRemaining)
         isPaused = false
-        // 残り時間で新しいタイマーを開始
-        millisInFuture = timeRemaining
-        start()
     }
 
-    fun startNew() {
-        cancel()
-        timeRemaining = millisInFuture
-        isPaused = false
-        start()
+    private fun startNewTimer(millis: Long) {
+        countDownTimer = object : CountDownTimer(millis, countDownInterval) {
+            override fun onTick(millisUntilFinished: Long) {
+                onTickAction(millisUntilFinished)
+                timeRemaining = millisUntilFinished
+            }
+
+            override fun onFinish() {
+                onFinishAction()
+            }
+        }
+        countDownTimer?.start()
     }
 
     fun isPaused(): Boolean {
