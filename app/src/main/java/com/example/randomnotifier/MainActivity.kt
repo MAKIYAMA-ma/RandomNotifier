@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val INTERVAL_MILLISECOND: Long = 200
 
-    private var timer: CountDownTimer? = null
+    private var timer: CustomCountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +92,10 @@ class MainActivity : AppCompatActivity() {
         val btStart = findViewById<Button>(R.id.start_button)
         val btStartListener = StartButtonListener()
         btStart.setOnClickListener(btStartListener)
+
+        val btStop = findViewById<Button>(R.id.stop_button)
+        val btStopListener = StopButtonListener()
+        btStop.setOnClickListener(btStopListener)
     }
 
     private fun showPermissionDialog() {
@@ -154,16 +157,37 @@ class MainActivity : AppCompatActivity() {
             setTimerBoxText(DataManager.getAnswerTime())
 
             val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000
-            timer = object : CountDownTimer(countDownMillisec, INTERVAL_MILLISECOND) {
-                override fun onTick(millisUntilFinished: Long) {
+            timer = CustomCountDownTimer(
+                countDownMillisec,
+                INTERVAL_MILLISECOND,
+                onTickAction = { millisUntilFinished ->
                     setTimerBoxText(ceil(millisUntilFinished / 1000.0).toInt())
-                }
-
-                override fun onFinish() {
+                },
+                onFinishAction = {
                     setTimerBoxText(0)
                 }
+            )
+            timer?.startNew()
+            val btStop = findViewById<Button>(R.id.stop_button)
+            btStop.text = getString(R.string.stop)
+        }
+    }
+
+    private inner class StopButtonListener : View.OnClickListener {
+        override fun onClick(view: View) {
+            var paused = timer?.isPaused()
+            if(paused == null) {
+                paused = false
             }
-            timer?.start()
+
+            val btStop = findViewById<Button>(R.id.stop_button)
+            if(paused) {
+                timer?.resume()
+                btStop.text = getString(R.string.stop)
+            } else {
+                timer?.pause()
+                btStop.text = getString(R.string.resume)
+            }
         }
     }
 }

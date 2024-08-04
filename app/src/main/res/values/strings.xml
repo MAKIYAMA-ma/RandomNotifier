@@ -6,6 +6,8 @@
     <string name="initial_time">00</string>
     <string name="initial_alarm">00:00</string>
     <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="resume">RESUME</string>
     <string name="finish">FINISH</string>
     <string name="setting">SETTING</string>
     <string name="return_btn">RETURN</string>
