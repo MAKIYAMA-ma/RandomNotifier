@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import java.text.SimpleDateFormat
+// import java.text.SimpleDateFormat
 import java.util.Calendar
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -19,9 +19,10 @@ class NotificationReceiver : BroadcastReceiver() {
         val resultPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         // for debug
-        val cur_calendar = Calendar.getInstance()
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val titleStr = format.format(cur_calendar.time)
+        // val cur_calendar = Calendar.getInstance()
+        // val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        // val titleStr = format.format(cur_calendar.time)
+        val titleStr = "Please explain your opinion!"
 
         if(!DataManager.isInUse()) {
             DataManager.init(context)
