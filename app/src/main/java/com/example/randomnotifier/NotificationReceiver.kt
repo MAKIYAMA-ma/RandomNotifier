@@ -29,6 +29,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         // ランダムに問題を更新
         DataManager.updateQuestion(context)
+        DataManager.saveSettingData()
 
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)

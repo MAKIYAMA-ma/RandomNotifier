@@ -81,6 +81,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // 問題更新機能
+        val next_question_button: Button = findViewById<Button>(R.id.next_question_button)
+        next_question_button.setOnClickListener{
+            DataManager.updateQuestion(this)
+            DataManager.saveSettingData()
+
+            val questionView: TextView = findViewById(R.id.question_view)
+            questionView.text = DataManager.getQuestion()
+        }
+
         // SETTINGボタンによる画面遷移
         val setting_button: Button = findViewById<Button>(R.id.setting_button)
         setting_button.setOnClickListener{

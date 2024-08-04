@@ -12,6 +12,7 @@
     <string name="setting">SETTING</string>
     <string name="return_btn">RETURN</string>
     <string name="save_btn">SAVE</string>
+    <string name="next_question">Next Question</string>
     <string name="alarm_label">Alarm</string>
     <string name="timer_label">Answer Time</string>
     <string name="file_label">Question File</string>
