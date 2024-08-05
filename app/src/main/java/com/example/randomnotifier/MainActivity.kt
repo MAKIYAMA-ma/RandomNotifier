@@ -89,6 +89,9 @@ class MainActivity : AppCompatActivity() {
 
             val questionView: TextView = findViewById(R.id.question_view)
             questionView.text = DataManager.getQuestion()
+
+            val hintCb: CheckBox = findViewById(R.id.hint_cb)
+            hintCb.isChecked = false
         }
 
         // SETTINGボタンによる画面遷移
