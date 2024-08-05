@@ -45,12 +45,13 @@
         app:layout_constraintTop_toTopOf="@+id/hint_cb"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    <com.example.randomnotifier.PushButton
         android:id="@+id/next_question_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/next_question"
         android:textSize="25sp"
+        style="@style/CustomButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,12 +71,13 @@
         app:layout_constraintTop_toTopOf="@+id/next_question_button"
         app:layout_constraintVertical_bias="0.3" />
 
-    <Button
+    <com.example.randomnotifier.PushButton
         android:id="@+id/start_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:textSize="25sp"
+        style="@style/CustomButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/stop_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,12 +85,13 @@
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintHorizontal_chainStyle="spread" />
 
-    <Button
+    <com.example.randomnotifier.PushButton
         android:id="@+id/stop_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/stop"
         android:textSize="25sp"
+        style="@style/CustomButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/start_button"
@@ -96,11 +99,12 @@
         app:layout_constraintVertical_bias="0"
         app:layout_constraintHorizontal_chainStyle="spread" />
 
-    <Button
+    <com.example.randomnotifier.PushButton
         android:id="@+id/setting_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/setting"
+        style="@style/CustomButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.878"
