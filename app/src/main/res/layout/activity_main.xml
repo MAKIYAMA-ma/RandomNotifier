@@ -23,8 +23,10 @@
     <CheckBox
         android:id="@+id/hint_cb"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="center"
         android:text="@string/hint"
+        android:textSize="16sp"
         app:layout_constraintTop_toTopOf="@+id/question_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,13 +36,14 @@
 
     <TextView
         android:id="@+id/hint_box"
-        android:layout_width="229dp"
-        android:layout_height="45dp"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:text="@string/hint_box"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.586"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/hint_cb"
         app:layout_constraintTop_toTopOf="@+id/hint_cb"
         app:layout_constraintVertical_bias="0.0" />
