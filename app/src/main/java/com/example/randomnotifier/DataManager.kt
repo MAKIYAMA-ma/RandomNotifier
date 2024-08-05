@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Log
 import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -329,35 +333,51 @@ object DataManager {
     }
 
     private fun getLineCountFromUri(context: Context, uri: Uri): Int {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val reader = BufferedReader(InputStreamReader(inputStream))
         var lineCount = 0
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val reader = BufferedReader(InputStreamReader(inputStream))
 
-        reader.use {
-            while (it.readLine() != null) {
-                lineCount++
+            reader.use {
+                while (it.readLine() != null) {
+                    lineCount++
+                }
             }
+        } catch (e: FileNotFoundException) {
+            Log.e("getLineCountFromUri", "File not found: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("getLineCountFromUri", "IO error: ${e.message}")
+        } catch (e: Exception) {
+            Log.e("getLineCountFromUri", "Unexpected error: ${e.message}")
         }
         return lineCount
     }
 
     private fun readLineFromUri(context: Context, uri: Uri, lineNum: Int): String {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val reader = BufferedReader(InputStreamReader(inputStream))
         var result = ""
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val reader = BufferedReader(InputStreamReader(inputStream))
 
-        reader.use {
-            var currentLineNum = 1
-            var line = it.readLine()
+            reader.use {
+                var currentLineNum = 1
+                var line = it.readLine()
 
-            while (line != null) {
-                if (currentLineNum == lineNum) {
-                    result = line
-                    break
+                while (line != null) {
+                    if (currentLineNum == lineNum) {
+                        result = line
+                        break
+                    }
+                    currentLineNum++
+                    line = it.readLine()
                 }
-                currentLineNum++
-                line = it.readLine()
             }
+        } catch (e: FileNotFoundException) {
+            Log.e("getLineCountFromUri", "File not found: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("getLineCountFromUri", "IO error: ${e.message}")
+        } catch (e: Exception) {
+            Log.e("getLineCountFromUri", "Unexpected error: ${e.message}")
         }
         return result
     }
