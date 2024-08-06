@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,11 +25,13 @@ import kotlin.math.ceil
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
-    private val REQUEST_CODE_POST_NOTIFICATIONS= 2
+    private val REQUEST_CODE_POST_NOTIFICATIONS = 2
 
     private val INTERVAL_MILLISECOND: Long = 200
 
     private var timer: CustomCountDownTimer? = null
+
+    private var recEnable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,13 +105,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         // set function of button
-        val btStart = findViewById<Button>(R.id.start_button)
-        val btStartListener = StartButtonListener()
-        btStart.setOnClickListener(btStartListener)
+        val btTimer = findViewById<ImageButton>(R.id.timer_button)
+        val btTimerListener = TimerButtonListener()
+        btTimer.setOnClickListener(btTimerListener)
 
-        val btStop = findViewById<Button>(R.id.stop_button)
-        val btStopListener = StopButtonListener()
-        btStop.setOnClickListener(btStopListener)
+        val btReset = findViewById<ImageButton>(R.id.reset_timer_button)
+        val btResetListener = ResetButtonListener()
+        btReset.setOnClickListener(btResetListener)
+
+        val btRec = findViewById<ImageButton>(R.id.rec_button)
+        val btRecListener = RecButtonListener()
+        btRec.setOnClickListener(btRecListener)
     }
 
     private fun showPermissionDialog() {
@@ -164,7 +171,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private inner class StartButtonListener : View.OnClickListener {
+    private inner class TimerButtonListener : View.OnClickListener {
+        override fun onClick(view: View) {
+            if(timer == null) {
+                val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000
+                timer = CustomCountDownTimer(
+                    countDownMillisec,
+                    INTERVAL_MILLISECOND,
+                    onTickAction = { millisUntilFinished ->
+                        setTimerBoxText(ceil(millisUntilFinished / 1000.0).toInt())
+                    },
+                    onFinishAction = {
+                        setTimerBoxText(0)
+                    }
+                )
+            }
+
+            var paused = timer?.isPaused()
+            if(paused == null) {
+                paused = false
+            }
+
+            val btTimer = findViewById<ImageButton>(R.id.timer_button)
+            if(paused) {
+                timer?.resume()
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
+                btTimer.setImageDrawable(newImage)
+            } else {
+                timer?.pause()
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button_img)
+                btTimer.setImageDrawable(newImage)
+            }
+        }
+    }
+
+    private inner class ResetButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             timer?.cancel()
             setTimerBoxText(DataManager.getAnswerTime())
@@ -180,26 +221,20 @@ class MainActivity : AppCompatActivity() {
                     setTimerBoxText(0)
                 }
             )
-            timer?.start()
-            val btStop = findViewById<Button>(R.id.stop_button)
-            btStop.text = getString(R.string.stop)
         }
     }
 
-    private inner class StopButtonListener : View.OnClickListener {
+    private inner class RecButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
-            var paused = timer?.isPaused()
-            if(paused == null) {
-                paused = false
-            }
-
-            val btStop = findViewById<Button>(R.id.stop_button)
-            if(paused) {
-                timer?.resume()
-                btStop.text = getString(R.string.stop)
+            val btRec = findViewById<ImageButton>(R.id.rec_button)
+            if(recEnable) {
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_disable)
+                btRec.setImageDrawable(newImage)
+                recEnable = false
             } else {
-                timer?.pause()
-                btStop.text = getString(R.string.resume)
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_enable)
+                btRec.setImageDrawable(newImage)
+                recEnable = true
             }
         }
     }
