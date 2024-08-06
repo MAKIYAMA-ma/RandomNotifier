@@ -75,6 +75,35 @@
         app:layout_constraintVertical_bias="0.28" />
 
     <com.example.randomnotifier.PushImageButton
+        android:id="@+id/rec_button"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:scaleType="centerInside"
+        style="@style/CustomImageButtonStyle"
+        app:srcCompat="@drawable/mike_enable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/play_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timer_box"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintHorizontal_chainStyle="spread" />
+
+    <com.example.randomnotifier.PushImageButton
+        android:id="@+id/play_button"
+        android:layout_width="70sp"
+        android:layout_height="70sp"
+        android:scaleType="centerInside"
+        style="@style/CustomImageButtonStyle"
+        app:srcCompat="@drawable/check_rec_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rec_button"
+        app:layout_constraintTop_toTopOf="@+id/rec_button"
+        app:layout_constraintEnd_toStartOf="@+id/timer_button"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_chainStyle="spread" />
+
+    <com.example.randomnotifier.PushImageButton
         android:id="@+id/timer_button"
         android:layout_width="70sp"
         android:layout_height="70sp"
@@ -82,10 +111,11 @@
         style="@style/CustomImageButtonStyle"
         app:srcCompat="@drawable/play_button_img"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/play_button"
+        app:layout_constraintTop_toTopOf="@+id/rec_button"
         app:layout_constraintEnd_toStartOf="@+id/reset_timer_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/timer_box"
-        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintHorizontal_chainStyle="spread" />
 
     <com.example.randomnotifier.PushImageButton
@@ -98,22 +128,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/timer_button"
-        app:layout_constraintTop_toTopOf="@+id/timer_button"
-        app:layout_constraintEnd_toStartOf="@+id/rec_button"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintHorizontal_chainStyle="spread" />
-
-    <com.example.randomnotifier.PushImageButton
-        android:id="@+id/rec_button"
-        android:layout_width="70sp"
-        android:layout_height="70sp"
-        android:scaleType="centerInside"
-        style="@style/CustomImageButtonStyle"
-        app:srcCompat="@drawable/mike_enable"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/reset_timer_button"
-        app:layout_constraintTop_toTopOf="@+id/timer_button"
+        app:layout_constraintTop_toTopOf="@+id/rec_button"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintHorizontal_chainStyle="spread" />
 
