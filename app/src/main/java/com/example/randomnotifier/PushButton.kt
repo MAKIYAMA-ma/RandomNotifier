@@ -4,14 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.Button
-// import androidx.appcompat.widget.AppCompatButton
 
 class PushButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = android.R.attr.buttonStyle
 ) : Button(context, attrs, defStyleAttr) {
-// ) : AppCompatButton(context, attrs, defStyleAttr) {
 
     private var clickListener: OnClickListener? = null
 
