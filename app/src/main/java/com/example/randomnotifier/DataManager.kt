@@ -8,12 +8,16 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.lang.Exception
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVParser
 
 object DataManager {
     @Volatile private var isInUse = false
@@ -126,16 +130,42 @@ object DataManager {
 
     fun updateQuestion(context: Context) {
         filePath?.let {
-            if(lineCount > 0) {
-                val selectedLine = (1..lineCount).random()
-                val line = readLineFromUri(context, Uri.parse(it), selectedLine)
-                val strs = line.split("	")
-                println(strs)
-                question = strs[0]
-                if(strs.size > 1) {
-                    hint = strs[1]
-                } else {
-                    hint = ""
+            if (lineCount > 0) {
+                val contentUri = Uri.parse(it)
+
+                try {
+                    context.contentResolver.openInputStream(contentUri)?.use { inputStream ->
+                        BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).use { reader ->
+                            // BOMをスキップする処理
+                            if (reader.markSupported()) {
+                                reader.mark(1)
+                                if (reader.read() != '\uFEFF'.toInt()) {
+                                    reader.reset()
+                                }
+                            }
+
+                            val csvFormat = CSVFormat.EXCEL
+                            .withFirstRecordAsHeader()  // 最初の行をヘッダーとして扱う
+                            .withIgnoreSurroundingSpaces()
+                            .withIgnoreEmptyLines()
+
+                            val csvParser = CSVParser(reader, csvFormat)
+                            val records = csvParser.records
+
+                            val selectedLine = (1..lineCount).random()
+                            if (selectedLine > records.size) {
+                                println("Selected line is out of range")
+                                return
+                            }
+
+                            val csvRecord = records[selectedLine - 1]
+                            question = csvRecord.get("Question")
+                            hint = csvRecord.get("Hint")
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    println("Error parsing CSV file: ${e.message}")
                 }
             }
         }
@@ -342,6 +372,10 @@ object DataManager {
                 while (it.readLine() != null) {
                     lineCount++
                 }
+            }
+            if(lineCount > 0) {
+                // トップにタイトルを付ける
+                lineCount--
             }
         } catch (e: FileNotFoundException) {
             Log.e("getLineCountFromUri", "File not found: ${e.message}")
