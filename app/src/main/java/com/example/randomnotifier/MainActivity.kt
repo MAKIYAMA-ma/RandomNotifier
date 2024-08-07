@@ -107,7 +107,17 @@ class MainActivity : AppCompatActivity() {
 
         val btPlay = findViewById<ImageButton>(R.id.play_button)
         btPlay.setOnClickListener{
-            mediaManager?.playLastRecording()
+            mediaManager?.let {
+                if(it.isPlaying()) {
+                    btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
+                    it.stopPlayback()
+                } else {
+                    btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button))
+                    it.playLastRecording {
+                        btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
+                    }
+                }
+            }
         }
     }
 

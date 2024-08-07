@@ -76,17 +76,43 @@ class MediaManager(private val context: Context) {
         }
     }
 
-    fun playLastRecording() {
+    fun playLastRecording(onCompletion: () -> Unit) {
         mediaPlayer = MediaPlayer().apply {
             try {
                 setDataSource(fileName)
                 prepare()
                 start()
                 showToast("Playing recording")
+                setOnCompletionListener {
+                    showToast("Playback completed")
+                    release()
+                    onCompletion()
+                    mediaPlayer = null
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
+                showToast("Failed to play recording")
             }
         }
+    }
+
+    fun stopPlayback() {
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
+                it.reset()
+                it.release()
+                mediaPlayer = null
+                showToast("Playback stopped")
+            }
+        }
+    }
+
+    fun isPlaying(): Boolean {
+        mediaPlayer?.let {
+            return it.isPlaying
+        }
+        return false
     }
 
     fun saveRecording() {
