@@ -67,8 +67,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 問題更新機能
-        val next_question_button: Button = findViewById<Button>(R.id.next_question_button)
-        next_question_button.setOnClickListener{
+        val btNextQuestion: Button = findViewById<Button>(R.id.next_question_button)
+        btNextQuestion.setOnClickListener{
             DataManager.updateQuestion(this)
             DataManager.saveSettingData()
 
@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // SETTINGボタンによる画面遷移
-        val setting_button: Button = findViewById<Button>(R.id.setting_button)
-        setting_button.setOnClickListener{
+        val btSetting: Button = findViewById<Button>(R.id.setting_button)
+        btSetting.setOnClickListener{
             val intent = Intent(this,SettingForm::class.java)
             startActivity(intent)
         }
@@ -94,6 +94,12 @@ class MainActivity : AppCompatActivity() {
         val btReset = findViewById<ImageButton>(R.id.reset_timer_button)
         val btResetListener = ResetButtonListener()
         btReset.setOnClickListener(btResetListener)
+
+        val btStop = findViewById<ImageButton>(R.id.stop_timer_button)
+        btStop.setOnClickListener{
+            timer?.cancel()
+            mediaManager?.stopRecording()
+        }
 
         val btRec = findViewById<ImageButton>(R.id.rec_button)
         val btRecListener = RecButtonListener()
@@ -222,16 +228,16 @@ class MainActivity : AppCompatActivity() {
                 if(paused) {
                     timer?.resume()
                     mediaManager?.resumeRecording()
-                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
+                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.pause_button)
                 } else {
                     timer?.pause()
                     mediaManager?.stopRecording()
-                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button_img)
+                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.start_button)
                 }
             } else {
                 timer?.start()
                 mediaManager?.startRecording()
-                newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
+                newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.pause_button)
             }
             newImage?.let {
                 btTimer.setImageDrawable(it)
@@ -263,11 +269,11 @@ class MainActivity : AppCompatActivity() {
         override fun onClick(view: View) {
             val btRec = findViewById<ImageButton>(R.id.rec_button)
             if(recEnable) {
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_disable)
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_disable_button)
                 btRec.setImageDrawable(newImage)
                 recEnable = false
             } else {
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_enable)
+                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_enable_button)
                 btRec.setImageDrawable(newImage)
                 recEnable = true
             }
