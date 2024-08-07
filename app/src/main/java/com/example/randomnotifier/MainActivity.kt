@@ -8,6 +8,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +26,7 @@ import kotlin.math.ceil
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
-    private val REQUEST_CODE_POST_NOTIFICATIONS = 2
+    private val REQUEST_CODE_OTHER_PERMISSIONS = 2
 
     private val INTERVAL_MILLISECOND: Long = 200
 
@@ -33,41 +34,22 @@ class MainActivity : AppCompatActivity() {
 
     private var recEnable = true
 
+    private var mediaManager: MediaManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 最初に権限の確認と要求をする
+        checkPermissions()
+
+        mediaManager = MediaManager(this)
 
         if(!DataManager.isInUse()) {
             DataManager.init(this)
         }
 
         createNotificationChannel()
-
-        // 権限が許可されているか確認
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (alarmManager.canScheduleExactAlarms()) {
-            // 権限が既に許可されている場合、アラームを設定する
-            println("Already Permited")
-            DataManager.scheduleNextNotification(this)
-        } else {
-            // 権限が許可されていない場合、要求する
-            println("Need Permision")
-            showPermissionDialog()
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13以上かどうかをチェック
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // 権限が許可されていない場合、要求する
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    REQUEST_CODE_POST_NOTIFICATIONS
-                )
-            }
-        }
 
         val questionView: TextView = findViewById(R.id.question_view)
         questionView.text = DataManager.getQuestion()
@@ -171,6 +153,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkPermissions(): Boolean {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (alarmManager.canScheduleExactAlarms()) {
+            // 権限が既に許可されている場合、アラームを設定する
+            println("Already Permited")
+            DataManager.scheduleNextNotification(this)
+        } else {
+            // 権限が許可されていない場合、要求する
+            println("Need Permision")
+            showPermissionDialog()
+        }
+
+        val recordPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+        val storageWritePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val storageReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        var notificationPermission = PackageManager.PERMISSION_GRANTED
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13以上かどうかをチェック
+            notificationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        val permissions = mutableListOf<String>()
+        if (recordPermission != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.RECORD_AUDIO)
+        }
+        if (storageWritePermission != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (storageReadPermission != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        if (notificationPermission != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        return if (permissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissions.toTypedArray(), REQUEST_CODE_OTHER_PERMISSIONS)
+            false
+        } else {
+            true
+        }
+    }
+
     private inner class TimerButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             if(timer == null) {
@@ -187,20 +212,29 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-            var paused = timer?.isPaused()
-            if(paused == null) {
-                paused = false
-            }
+            val running = timer?.isRunning() ?: false
+            val paused = timer?.isPaused() ?: false
 
             val btTimer = findViewById<ImageButton>(R.id.timer_button)
-            if(paused) {
-                timer?.resume()
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
-                btTimer.setImageDrawable(newImage)
+            var newImage: Drawable? = null
+
+            if(running) {
+                if(paused) {
+                    timer?.resume()
+                    mediaManager?.resumeRecording()
+                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
+                } else {
+                    timer?.pause()
+                    mediaManager?.stopRecording()
+                    newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button_img)
+                }
             } else {
-                timer?.pause()
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button_img)
-                btTimer.setImageDrawable(newImage)
+                timer?.start()
+                mediaManager?.startRecording()
+                newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button_img)
+            }
+            newImage?.let {
+                btTimer.setImageDrawable(it)
             }
         }
     }
@@ -208,6 +242,7 @@ class MainActivity : AppCompatActivity() {
     private inner class ResetButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             timer?.cancel()
+            mediaManager?.stopRecording()
             setTimerBoxText(DataManager.getAnswerTime())
 
             val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000

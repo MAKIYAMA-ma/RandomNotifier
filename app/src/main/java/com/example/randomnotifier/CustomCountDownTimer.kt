@@ -12,13 +12,18 @@ class CustomCountDownTimer(
     private var countDownTimer: CountDownTimer? = null
 
     private var timeRemaining: Long = millisInFuture
-    private var isPaused: Boolean = true
+    private var isRunning: Boolean = false
+    private var isPaused: Boolean = false
 
     fun start() {
         startNewTimer(millisInFuture)
+        isRunning = true
+        isPaused = false
     }
 
     fun cancel() {
+        isRunning = false
+        isPaused = false
         countDownTimer?.cancel()
     }
 
@@ -48,5 +53,9 @@ class CustomCountDownTimer(
 
     fun isPaused(): Boolean {
         return isPaused
+    }
+
+    fun isRunning(): Boolean {
+        return isRunning
     }
 }
