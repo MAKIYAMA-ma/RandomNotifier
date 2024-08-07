@@ -104,6 +104,11 @@ class MainActivity : AppCompatActivity() {
         val btRec = findViewById<ImageButton>(R.id.rec_button)
         val btRecListener = RecButtonListener()
         btRec.setOnClickListener(btRecListener)
+
+        val btPlay = findViewById<ImageButton>(R.id.play_button)
+        btPlay.setOnClickListener{
+            mediaManager?.playLastRecording()
+        }
     }
 
     private fun showPermissionDialog() {
