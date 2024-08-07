@@ -99,6 +99,9 @@ class MainActivity : AppCompatActivity() {
         btStop.setOnClickListener{
             timer?.cancel()
             mediaManager?.stopRecording()
+
+            val btTimer = findViewById<ImageButton>(R.id.timer_button)
+            btTimer.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.start_button))
         }
 
         val btRec = findViewById<ImageButton>(R.id.rec_button)
