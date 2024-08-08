@@ -98,7 +98,9 @@ class MainActivity : AppCompatActivity() {
         val btStop = findViewById<ImageButton>(R.id.stop_timer_button)
         btStop.setOnClickListener{
             timer?.cancel()
-            mediaManager?.stopRecording()
+            if(recEnable) {
+                mediaManager?.stopRecording()
+            }
 
             val btTimer = findViewById<ImageButton>(R.id.timer_button)
             btTimer.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.start_button))
@@ -110,14 +112,16 @@ class MainActivity : AppCompatActivity() {
 
         val btPlay = findViewById<ImageButton>(R.id.play_button)
         btPlay.setOnClickListener{
-            mediaManager?.let {
-                if(it.isPlaying()) {
-                    btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
-                    it.stopPlayback()
-                } else {
-                    btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button))
-                    it.playLastRecording {
+            if(recEnable) {
+                mediaManager?.let {
+                    if(it.isPlaying()) {
                         btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
+                        it.stopPlayback()
+                    } else {
+                        btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.stop_button))
+                        it.playLastRecording {
+                            btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
+                        }
                     }
                 }
             }
@@ -245,16 +249,22 @@ class MainActivity : AppCompatActivity() {
             if(running) {
                 if(paused) {
                     timer?.resume()
-                    mediaManager?.resumeRecording()
+                    if(recEnable) {
+                        mediaManager?.resumeRecording()
+                    }
                     newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.pause_button)
                 } else {
                     timer?.pause()
-                    mediaManager?.stopRecording()
+                    if(recEnable) {
+                        mediaManager?.stopRecording()
+                    }
                     newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.start_button)
                 }
             } else {
                 timer?.start()
-                mediaManager?.startRecording()
+                if(recEnable) {
+                    mediaManager?.startRecording()
+                }
                 newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.pause_button)
             }
             newImage?.let {
@@ -266,7 +276,9 @@ class MainActivity : AppCompatActivity() {
     private inner class ResetButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             timer?.cancel()
-            mediaManager?.stopRecording()
+            if(recEnable) {
+                mediaManager?.stopRecording()
+            }
             setTimerBoxText(DataManager.getAnswerTime())
 
             val countDownMillisec: Long = DataManager.getAnswerTime().toLong() * 1000
@@ -280,19 +292,25 @@ class MainActivity : AppCompatActivity() {
                     setTimerBoxText(0)
                 }
             )
+            val btTimer = findViewById<ImageButton>(R.id.timer_button)
+            btTimer.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.start_button))
         }
     }
 
     private inner class RecButtonListener : View.OnClickListener {
         override fun onClick(view: View) {
             val btRec = findViewById<ImageButton>(R.id.rec_button)
+            val btPlay = findViewById<ImageButton>(R.id.play_button)
             if(recEnable) {
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_disable_button)
-                btRec.setImageDrawable(newImage)
+                btRec.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_disable_button))
+                btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_disable_button))
+                // 録音や再生は強制的に停止
+                mediaManager?.stopRecording()
+                mediaManager?.stopPlayback()
                 recEnable = false
             } else {
-                val newImage = ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_enable_button)
-                btRec.setImageDrawable(newImage)
+                btRec.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.mike_enable_button))
+                btPlay.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.play_button))
                 recEnable = true
             }
         }

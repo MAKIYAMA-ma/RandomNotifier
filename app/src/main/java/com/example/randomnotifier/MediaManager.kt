@@ -51,9 +51,12 @@ class MediaManager(private val context: Context) {
             release()
         }
         mediaRecorder = null
+        val curRecording = isRecording
         isRecording = false
         isPaused = false
-        showToast("Recording stopped")
+        if(curRecording) {
+            showToast("Recording stopped")
+        }
     }
 
     fun pauseRecording() {
