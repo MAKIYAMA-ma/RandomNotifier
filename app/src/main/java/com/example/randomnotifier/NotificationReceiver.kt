@@ -23,14 +23,17 @@ class NotificationReceiver : BroadcastReceiver() {
         // val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         // val titleStr = format.format(cur_calendar.time)
         val titleStr = "Please explain your opinion!"
+        val updateQuestion = (intent?.getBooleanExtra("update_question", true)) ?: true
 
         if(!DataManager.isInUse()) {
             DataManager.init(context)
         }
 
-        // ランダムに問題を更新
-        DataManager.updateQuestion(context)
-        DataManager.saveSettingData()
+        if(updateQuestion) {
+            // ランダムに問題を更新
+            DataManager.updateQuestion(context)
+            DataManager.saveSettingData()
+        }
 
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)
@@ -43,6 +46,10 @@ class NotificationReceiver : BroadcastReceiver() {
 
         // アラームが発動したら、次のアラームを仕掛ける
         DataManager.scheduleNextNotification(context)
+        if(updateQuestion) {
+            // リマインドを仕掛ける
+            DataManager.scheduleReminder(context)
+        }
         println("Receive")
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(1, notification)

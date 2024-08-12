@@ -37,7 +37,6 @@ class CustomNumberPicker(context: Context, attrs: AttributeSet?) : NumberPicker(
                 val child = this.getChildAt(i)
                 if (child is EditText) {
                     child.textSize = textSize
-                    println(child.textSize)
                     child.setTypeface(child.typeface, Typeface.BOLD)
                     child.visibility = View.VISIBLE
                 }

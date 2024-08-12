@@ -330,11 +330,46 @@ object DataManager {
         // return curCalendar
     }
 
-    private fun scheduleNotification(context: Context, notificationTime: Calendar) {
-        val intent = Intent(context, NotificationReceiver::class.java)
+    fun scheduleNextNotification(context: Context) {
+        getNotificationTime()?.let {
+            val intent = Intent(context, NotificationReceiver::class.java).apply {
+                putExtra("update_question", true)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            // 既にアラームが存在するならいったん解除
+            alarmManager.cancel(pendingIntent)
+
+            // for debug
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            println(format.format(it.time))
+
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                it.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    fun scheduleReminder(context: Context) {
+        val remindCalendar = Calendar.getInstance()
+        remindCalendar.add(Calendar.MINUTE, 1)  // for Test
+        // remindCalendar.add(Calendar.MINUTE, 30)
+
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("update_question", false)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            1,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -346,20 +381,29 @@ object DataManager {
 
         // for debug
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        println(format.format(notificationTime.time))
+        println(format.format(remindCalendar.time))
 
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
-            notificationTime.timeInMillis,
+            remindCalendar.timeInMillis,
             pendingIntent
         )
     }
 
-    fun scheduleNextNotification(context: Context) {
-        println(context)
-        getNotificationTime()?.let {
-            scheduleNotification(context, it)
+    fun cancelReminder(context: Context) {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("update_question", false)
         }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            1,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        alarmManager.cancel(pendingIntent)
     }
 
     private fun getLineCountFromUri(context: Context, uri: Uri): Int {
