@@ -51,8 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         createNotificationChannel()
 
-        val questionView: TextView = findViewById(R.id.question_view)
-        questionView.text = DataManager.getQuestion()
+        updateQuestionView()
 
         setTimerBoxText(DataManager.getAnswerTime())
 
@@ -72,11 +71,7 @@ class MainActivity : AppCompatActivity() {
             DataManager.updateQuestion(this)
             DataManager.saveSettingData()
 
-            val questionView: TextView = findViewById(R.id.question_view)
-            questionView.text = DataManager.getQuestion()
-
-            val hintCb: CheckBox = findViewById(R.id.hint_cb)
-            hintCb.isChecked = false
+            updateQuestionView()
         }
 
         // SETTINGボタンによる画面遷移
@@ -221,6 +216,24 @@ class MainActivity : AppCompatActivity() {
             false
         } else {
             true
+        }
+    }
+
+    private fun updateQuestionView() {
+        val questionView: TextView = findViewById(R.id.question_view)
+        questionView.text = DataManager.getQuestion()
+
+        val hintCb: CheckBox = findViewById(R.id.hint_cb)
+        hintCb.isChecked = false
+
+        val hintView: TextView = findViewById(R.id.hint_box)
+
+        if (DataManager.getHint() == "") {
+            hintCb.isEnabled = false
+            hintView.text = getString(R.string.hint_box_none)
+        } else {
+            hintCb.isEnabled = true
+            hintView.text = getString(R.string.hint_box)
         }
     }
 
