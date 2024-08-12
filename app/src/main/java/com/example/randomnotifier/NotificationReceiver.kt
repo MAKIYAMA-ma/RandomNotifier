@@ -46,10 +46,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
         // アラームが発動したら、次のアラームを仕掛ける
         DataManager.scheduleNextNotification(context)
-        if(updateQuestion) {
-            // リマインドを仕掛ける
-            DataManager.scheduleReminder(context)
-        }
+        // リマインドを仕掛ける
+        DataManager.scheduleReminder(context)
         println("Receive")
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(1, notification)
