@@ -50,16 +50,31 @@
 
     <com.example.randomnotifier.PushButton
         android:id="@+id/next_question_button"
-        android:layout_width="wrap_content"
+        android:layout_width="150sp"
         android:layout_height="wrap_content"
         android:text="@string/next_question"
         android:textSize="25sp"
         style="@style/CustomButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/done_button"
         app:layout_constraintTop_toTopOf="@+id/hint_box"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintHorizontal_chainStyle="spread" />
+
+    <com.example.randomnotifier.PushButton
+        android:id="@+id/done_button"
+        android:layout_width="150sp"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:textSize="25sp"
+        style="@style/CustomButtonStyle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/next_question_button"
+        app:layout_constraintTop_toTopOf="@+id/next_question_button"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_chainStyle="spread" />
 
     <TextView
         android:id="@+id/timer_box"

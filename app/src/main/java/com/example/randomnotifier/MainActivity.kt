@@ -74,6 +74,11 @@ class MainActivity : AppCompatActivity() {
             updateQuestionView()
         }
 
+        val btDone: Button = findViewById<Button>(R.id.done_button)
+        btDone.setOnClickListener{
+            DataManager.cancelReminder(this)
+        }
+
         // SETTINGボタンによる画面遷移
         val btSetting: Button = findViewById<Button>(R.id.setting_button)
         btSetting.setOnClickListener{
