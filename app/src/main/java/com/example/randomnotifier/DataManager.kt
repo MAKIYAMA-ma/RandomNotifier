@@ -361,8 +361,8 @@ object DataManager {
 
     fun scheduleReminder(context: Context) {
         val remindCalendar = Calendar.getInstance()
-        remindCalendar.add(Calendar.MINUTE, 1)  // for Test
-        // remindCalendar.add(Calendar.MINUTE, 30)
+        // remindCalendar.add(Calendar.MINUTE, 1)  // for Test
+        remindCalendar.add(Calendar.MINUTE, 30)
 
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("update_question", false)
