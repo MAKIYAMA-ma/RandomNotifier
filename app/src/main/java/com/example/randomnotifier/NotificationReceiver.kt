@@ -17,23 +17,30 @@ class NotificationReceiver : BroadcastReceiver() {
         val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addNextIntentWithParentStack(resultIntent)
         val resultPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        if(!DataManager.isInUse()) {
+            DataManager.init(context)
+        }
 
+        if (intent.action == "ACTION_ALARM_TRIGGERED") {
+            // ランダムに問題を更新
+            DataManager.updateQuestion(context)
+            DataManager.saveSettingData()
+            notifyQuestion(context, resultPendingIntent)
+        } else if (intent.action == "ACTION_QUESTION_REMIND") {
+            notifyQuestion(context, resultPendingIntent)
+        } else {
+            // 時間設定等が行われた
+            // アラームを再設定する
+            DataManager.scheduleNextNotification(context)
+        }
+    }
+
+    private fun notifyQuestion(context: Context, resultPendingIntent: PendingIntent) {
         // for debug
         // val cur_calendar = Calendar.getInstance()
         // val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         // val titleStr = format.format(cur_calendar.time)
         val titleStr = "Please explain your opinion!"
-        val updateQuestion = (intent?.getBooleanExtra("update_question", true)) ?: true
-
-        if(!DataManager.isInUse()) {
-            DataManager.init(context)
-        }
-
-        if(updateQuestion) {
-            // ランダムに問題を更新
-            DataManager.updateQuestion(context)
-            DataManager.saveSettingData()
-        }
 
         val notification = NotificationCompat.Builder(context, "default")
             .setSmallIcon(R.drawable.ic_notification)

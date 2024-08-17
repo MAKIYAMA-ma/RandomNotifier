@@ -333,7 +333,7 @@ object DataManager {
     fun scheduleNextNotification(context: Context) {
         getNotificationTime()?.let {
             val intent = Intent(context, NotificationReceiver::class.java).apply {
-                putExtra("update_question", true)
+                action = "ACTION_ALARM_TRIGGERED"
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
@@ -365,7 +365,7 @@ object DataManager {
         remindCalendar.add(Calendar.MINUTE, 30)
 
         val intent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra("update_question", false)
+            action = "ACTION_QUESTION_REMIND"
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -392,7 +392,7 @@ object DataManager {
 
     fun cancelReminder(context: Context) {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra("update_question", false)
+            action = "ACTION_QUESTION_REMIND"
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,

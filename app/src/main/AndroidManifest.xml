@@ -30,7 +30,13 @@
 
         <activity android:name=".SettingForm" android:exported="true"/>
 
-        <receiver android:name=".NotificationReceiver" android:exported="true"/>
+        <receiver android:name=".NotificationReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET"/>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
