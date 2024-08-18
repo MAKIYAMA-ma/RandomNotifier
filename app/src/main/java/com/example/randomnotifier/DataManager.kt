@@ -383,7 +383,7 @@ object DataManager {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         println(format.format(remindCalendar.time))
 
-        alarmManager.setExact(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             remindCalendar.timeInMillis,
             pendingIntent

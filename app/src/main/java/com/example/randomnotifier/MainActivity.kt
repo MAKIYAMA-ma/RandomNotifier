@@ -126,6 +126,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val serviceIntent = Intent(this, ResetAlarmService::class.java)
+        startService(serviceIntent)
     }
 
     private fun showPermissionDialog() {
