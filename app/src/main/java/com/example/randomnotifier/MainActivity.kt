@@ -196,6 +196,7 @@ class MainActivity : AppCompatActivity() {
             showPermissionDialog()
         }
 
+        val foregroundPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED)
         val recordPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
         val storageWritePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         val storageReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -206,6 +207,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val permissions = mutableListOf<String>()
+        if (foregroundPermission!= PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED)
+        }
         if (recordPermission != PackageManager.PERMISSION_GRANTED) {
             permissions.add(Manifest.permission.RECORD_AUDIO)
         }

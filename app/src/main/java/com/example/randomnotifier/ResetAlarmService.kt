@@ -13,13 +13,13 @@ class ResetAlarmService: Service() {
         super.onCreate()
 
         // TODO it needs permision
-        // val notification = Notification.Builder(this, "default")
-        //     .setContentTitle("Think NOW! start running")
-        //     .setContentText("Think NOW! start running in the foreground")
-        //     .setSmallIcon(R.drawable.ic_notification)
-        //     .build()
+        val notification = Notification.Builder(this, "default")
+            .setContentTitle("Think NOW! start running")
+            .setContentText("Think NOW! start running in the foreground")
+            .setSmallIcon(R.drawable.ic_notification)
+            .build()
 
-        // startForeground(1, notification)
+        startForeground(2, notification)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
