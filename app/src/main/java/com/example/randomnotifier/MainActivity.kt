@@ -21,6 +21,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
@@ -127,8 +131,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val serviceIntent = Intent(this, ResetAlarmService::class.java)
-        startService(serviceIntent)
+        // バックグラウンドで強制終了されて消える可能性に備えて、1HごとにAlarm再設定するWorkを稼働させる
+        val alarmResetWorkRequest = PeriodicWorkRequestBuilder<ResetAlarmWorker>(1, TimeUnit.HOURS)
+        .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "AlarmResetWork",
+            ExistingPeriodicWorkPolicy.REPLACE, // 既存のWorkがあれば置き換える
+            alarmResetWorkRequest
+        )
     }
 
     private fun showPermissionDialog() {
