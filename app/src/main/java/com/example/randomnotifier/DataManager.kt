@@ -7,6 +7,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
@@ -16,6 +19,7 @@ import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 
@@ -356,6 +360,19 @@ object DataManager {
                 it.timeInMillis,
                 pendingIntent
             )
+
+            // バックグラウンドで強制終了されて消える可能性に備えて、1HごとにAlarm再設定するWorkを稼働させる
+            val alarmResetWorkRequest = PeriodicWorkRequestBuilder<ResetAlarmWorker>(1, TimeUnit.HOURS)
+            .build()
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                "AlarmResetWork",
+                ExistingPeriodicWorkPolicy.REPLACE, // 既存のWorkがあれば置き換える
+                alarmResetWorkRequest
+            )
+        } ?: run {
+            // アラームがないならWorkManagerによる再設定処理をキャンセル
+            WorkManager.getInstance(context).cancelUniqueWork("AlarmResetWork")
         }
     }
 
