@@ -363,6 +363,7 @@ object DataManager {
 
             // バックグラウンドで強制終了されて消える可能性に備えて、1HごとにAlarm再設定するWorkを稼働させる
             val alarmResetWorkRequest = PeriodicWorkRequestBuilder<ResetAlarmWorker>(1, TimeUnit.HOURS)
+            .setInitialDelay(1, TimeUnit.HOURS)  // 1時間後に最初の実行を設定
             .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
