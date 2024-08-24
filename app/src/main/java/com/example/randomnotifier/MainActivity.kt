@@ -40,14 +40,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // データの初期化
+        if(!DataManager.isInUse()) {
+            DataManager.init(this)
+        }
+
         // 最初に権限の確認と要求をする
         checkPermissions()
 
         mediaManager = MediaManager(this)
-
-        if(!DataManager.isInUse()) {
-            DataManager.init(this)
-        }
 
         createNotificationChannel()
 
