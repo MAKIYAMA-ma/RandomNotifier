@@ -335,21 +335,15 @@ object DataManager {
     }
 
     fun scheduleNextNotification(context: Context) {
+        val pendingIntent = getAlarmPendingIntent(context)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)          // 既存のアラームは解除
+        cancelReminder(context)
+
         getNotificationTime()?.let {
             val intent = Intent(context, NotificationReceiver::class.java).apply {
                 action = "ACTION_ALARM_TRIGGERED"
             }
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-            // 既にアラームが存在するならいったん解除
-            alarmManager.cancel(pendingIntent)
 
             // for debug
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -382,16 +376,7 @@ object DataManager {
         // remindCalendar.add(Calendar.MINUTE, 1)  // for Test
         remindCalendar.add(Calendar.MINUTE, 30)
 
-        val intent = Intent(context, NotificationReceiver::class.java).apply {
-            action = "ACTION_QUESTION_REMIND"
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            1,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
+        val pendingIntent = getRemindPendingIntent(context)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // 既にアラームが存在するならいったん解除
@@ -409,6 +394,27 @@ object DataManager {
     }
 
     fun cancelReminder(context: Context) {
+        val pendingIntent = getRemindPendingIntent(context)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        alarmManager.cancel(pendingIntent)
+    }
+
+    private fun getAlarmPendingIntent(context: Context): PendingIntent {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            action = "ACTION_ALARM_TRIGGERED"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        return pendingIntent;
+    }
+
+    private fun getRemindPendingIntent(context: Context): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             action = "ACTION_QUESTION_REMIND"
         }
@@ -419,9 +425,7 @@ object DataManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        alarmManager.cancel(pendingIntent)
+        return pendingIntent;
     }
 
     private fun getLineCountFromUri(context: Context, uri: Uri): Int {
