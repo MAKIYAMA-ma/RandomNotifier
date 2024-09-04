@@ -18,4 +18,5 @@
     <string name="alarm_label">Alarm</string>
     <string name="timer_label">Answer Time</string>
     <string name="file_label">Question File</string>
+    <string name="remild_cb">Enable Reminder</string>
 </resources>

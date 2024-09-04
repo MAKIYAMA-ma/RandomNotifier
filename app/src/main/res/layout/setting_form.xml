@@ -216,6 +216,20 @@
         app:layout_constraintTop_toTopOf="@+id/answertime_minute_picker"
         app:layout_constraintVertical_bias="0.0" />
 
+    <CheckBox
+        android:id="@+id/remind_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:gravity="left"
+        android:text="@string/remild_cb"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_label"
+        app:layout_constraintTop_toBottomOf="@+id/answertime_minute_picker"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.05" />
+
     <com.example.randomnotifier.PushButton
         android:id="@+id/save_button"
         android:layout_width="150dp"
@@ -228,7 +242,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answertime_minute_picker"
+        app:layout_constraintTop_toBottomOf="@+id/remind_cb"
         app:layout_constraintVertical_bias="0.2" />
 
     <com.example.randomnotifier.PushButton
