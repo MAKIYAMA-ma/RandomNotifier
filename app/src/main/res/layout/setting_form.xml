@@ -216,19 +216,47 @@
         app:layout_constraintTop_toTopOf="@+id/answertime_minute_picker"
         app:layout_constraintVertical_bias="0.0" />
 
-    <CheckBox
-        android:id="@+id/remind_cb"
+    <TextView
+        android:id="@+id/remind_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/remind_label"
         android:textSize="25sp"
         android:gravity="left"
-        android:text="@string/remild_cb"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_label"
-        app:layout_constraintTop_toBottomOf="@+id/answertime_minute_picker"
+        app:layout_constraintTop_toBottomOf="@+id/answertime_divide"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.03" />
+
+    <TextView
+        android:id="@+id/remind_en_view"
+        android:layout_width="233dp"
+        android:layout_height="55dp"
+        android:text="@string/enable_txt"
+        android:textSize="25sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_view"
+        app:layout_constraintTop_toBottomOf="@+id/remind_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarm3_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/remind_en_view"
+        app:layout_constraintTop_toTopOf="@+id/remind_en_view"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintVertical_bias="0" />
 
     <com.example.randomnotifier.PushButton
         android:id="@+id/save_button"
@@ -242,8 +270,8 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/remind_cb"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toBottomOf="@+id/remind_en_view"
+        app:layout_constraintVertical_bias="0.3" />
 
     <com.example.randomnotifier.PushButton
         android:id="@+id/return_button"
