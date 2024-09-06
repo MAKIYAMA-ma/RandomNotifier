@@ -142,6 +142,9 @@ class SettingForm : AppCompatActivity() {
         minutePicker.value = anserTime / 60
         secondPicker.value = anserTime % 60
 
+        val remindSwitch: SwitchCompat = findViewById(R.id.remind_switch)
+        remindSwitch.isChecked = DataManager.isRemindEn()
+
         val btSave = findViewById<Button>(R.id.save_button)
         val btSaveListener = SaveButtonListener()
         btSave.setOnClickListener(btSaveListener)
@@ -193,6 +196,9 @@ class SettingForm : AppCompatActivity() {
             val secondPicker: NumberPicker = findViewById(R.id.answertime_second_picker)
             val answerTime = minutePicker.value * 60 + secondPicker.value
             DataManager.setAnswerTime(answerTime)
+
+            val remindSwitch: SwitchCompat = findViewById(R.id.remind_switch)
+            DataManager.setRemindEn(remindSwitch.isChecked)
 
             DataManager.saveSettingData()
             DataManager.scheduleNextNotification(this@SettingForm)

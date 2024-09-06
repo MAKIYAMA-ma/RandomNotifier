@@ -247,7 +247,7 @@
         app:layout_constraintVertical_bias="0.01" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/alarm3_switch"
+        android:id="@+id/remind_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

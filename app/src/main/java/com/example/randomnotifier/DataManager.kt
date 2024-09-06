@@ -41,6 +41,7 @@ object DataManager {
     private var notifyTime3Hour   = 20
     private var notifyTime3Minute = 0
     private var answerTime: Int   = 1 * 60
+    private var remindEn          = false
 
     private lateinit var sharedPreferences: SharedPreferences
     private val KEY_QUESTION_FILE      = "filePath"
@@ -57,6 +58,7 @@ object DataManager {
     private val KEY_NOTIFYTIME3_HOUR   = "notifyTime3Hour"
     private val KEY_NOTIFYTIME3_MIN    = "notifyTime3Minute"
     private val KEY_ANSWER_TIME        = "answerTime"
+    private val KEY_REMIND_ENABLE      = "remindEnable"
 
     @Synchronized
     fun init(context: Context) {
@@ -96,6 +98,8 @@ object DataManager {
         notifyTime3Minute = getSettingInt(KEY_NOTIFYTIME3_MIN, 0)
 
         answerTime = getSettingInt(KEY_ANSWER_TIME, 1*60)
+
+        remindEn = getSettingBoolean(KEY_REMIND_ENABLE, true)
     }
 
     fun saveSettingData() {
@@ -118,6 +122,7 @@ object DataManager {
         saveSetting(KEY_NOTIFYTIME3_MIN, notifyTime3Minute)
 
         saveSetting(KEY_ANSWER_TIME, answerTime)
+        saveSetting(KEY_REMIND_ENABLE, remindEn)
     }
 
     // Getter and Setter for filePath
@@ -268,6 +273,14 @@ object DataManager {
 
     fun setAnswerTime(value: Int) {
         answerTime = value
+    }
+
+    fun isRemindEn(): Boolean {
+        return remindEn
+    }
+
+    fun setRemindEn(value: Boolean) {
+        remindEn = value
     }
 
     private fun getNotificationTime(): Calendar? {
